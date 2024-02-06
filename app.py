@@ -1,1 +1,1 @@
-print('hello BSUIR')
+print('hello Test Commit')
