@@ -5,7 +5,7 @@ import b_click
 w_main = tk.Tk()
 
 #MAIN WINDOW AREA
-w_main.geometry('1020x500+400+150')
+w_main.geometry('1250x500+400+150')
 w_main.title('КТСС')
 w_main.resizable(False, False)
 icon = tk.PhotoImage(file='./img/icon.png')
@@ -92,7 +92,10 @@ b_help.grid(row=4, column=5, padx='5',pady='5', sticky='wn')
 
 
 #TABLE AREA
-t_col = ("text", "digits", "mail")
+t_col = ("name", "subscr", "mins_in", 'mins_out',
+         'price_roum', 'price_in', 'price_out', 
+         'free_sms', 'free_mms', 'price_sms', 'Price_mms',
+         'free_mb', 'price_mb')
 t_data = [('text 11', 11, '11@mail'),
           ('text 22', 22, '22@mail'),
           ('text 33', 33, '33@mail'),
@@ -109,15 +112,56 @@ t_data = [('text 11', 11, '11@mail'),
           ('text 22', 22, '22@mail'),
           ('text 33', 33, '33@mail'),]
 
+
 t_main = ttk.Treeview(columns=t_col, show='headings')
 t_main.grid(column='2', row='1', rowspan='3', columnspan='4', sticky='esn')
 
-t_main.heading('text', text='Text')
-t_main.column('text', width='80')
-t_main.heading('digits', text='Digit')
-t_main.column('digits')
-t_main.heading('mail', text='Mail')
-t_main.column('mail', stretch=False, )
+#-заблокировать растягивание колонок
+def prevent_resize(event):
+    if t_main.identify_region(event.x, event.y) == "separator":
+        return "break"
+t_main.bind('<Button-1>', prevent_resize)
+t_main.bind('<Motion>', prevent_resize)
+##
+
+t_main.heading('name', text='Тариф')
+t_main.column('name', width='100', minwidth='100', stretch=False)
+
+t_main.heading('subscr', text='Абон.Пл.')
+t_main.column('subscr', width='50', minwidth='50', stretch=False)
+
+t_main.heading('mins_in', text='Мин.Вн.С.')
+t_main.column('mins_in', width='50', minwidth='50', stretch=False)
+
+t_main.heading('mins_out', text='Мин.Др.С.')
+t_main.column('mins_out', width='50', minwidth='50', stretch=False)
+
+t_main.heading('price_roum', text='Ст.Роум.')
+t_main.column('price_roum', width='50', minwidth='50', stretch=False)
+
+t_main.heading('price_in', text='Ст.Вн.с')
+t_main.column('price_in', width='50', minwidth='50', stretch=False)
+
+t_main.heading('price_out', text='Ст.Др.с')
+t_main.column('price_out', width='50', minwidth='50', stretch=False)
+
+t_main.heading('free_sms', text='Кол.СМС')
+t_main.column('free_sms', width='50', minwidth='50', stretch=False)
+
+t_main.heading('free_mms', text='Кол.ММС')
+t_main.column('free_mms', width='50', minwidth='50', stretch=False)
+
+t_main.heading('price_sms', text='Ст.СМС')
+t_main.column('price_sms', width='50', minwidth='50', stretch=False)
+
+t_main.heading('Price_mms', text='Ст.ММС')
+t_main.column('Price_mms', width='50', minwidth='50', stretch=False)
+
+t_main.heading('free_mb', text='Кол.Мб')
+t_main.column('free_mb', width='50', minwidth='50', stretch=False)
+
+t_main.heading('price_mb', text='Ст.Мб')
+t_main.column('price_mb', width='50', minwidth='50', stretch=False)
 
 for el in t_data:
     t_main.insert("", 'end', values=el)
