@@ -1,5 +1,5 @@
 import sys
 sys.path.insert(1, './modules')
-import w_main
+import main
 
-w_main
+main
