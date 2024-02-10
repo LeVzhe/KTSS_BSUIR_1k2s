@@ -10,11 +10,12 @@ w_main.title('КТСС')
 w_main.resizable(False, False)
 icon = tk.PhotoImage(file='./img/icon.png')
 w_main.iconphoto(False, icon)
+w_main.config(background='lightgrey')
 
 #LABEL AREA
 l_title = tk.Label(w_main, text='Калькулятор Тарифов Сотовой Связи', 
                    font=('Arial', 16, 'bold'), 
-                   height='3', fg='green')
+                   height='3', fg='green', bg='lightgrey')
 l_title.grid(columnspan='2', row=0)
 
 
@@ -64,29 +65,29 @@ b_save.grid(row=4, column=1, padx='10',pady='5', sticky='wn')
 
 #--under-table-buttons
 b_add_in_list = tk.Button(w_main, text='Добавить', 
-                   height='4', width='13', 
-                   bg='lightgreen', font=('arial', 12), 
+                   height='4', width='20', 
+                   bg='lightyellow', font=('arial', 12), 
                    command=b_click.add_in_list_on_click)
-b_add_in_list.grid(row=4, column=2, padx='5',pady='5', sticky='wn')
+b_add_in_list.grid(row=4, column=2, padx='5',pady='5', sticky='en')
 b_add_in_list.config(state='disabled')
 
 b_edit_in_list = tk.Button(w_main, text='Редактировать', 
-                   height='4', width='13', 
-                   bg='lightgreen', font=('arial', 12), 
+                   height='4', width='20', 
+                   bg='lightblue', font=('arial', 12), 
                    command=b_click.edit_in_list_on_click)
-b_edit_in_list.grid(row=4, column=3, padx='5',pady='5', sticky='wn')
+b_edit_in_list.grid(row=4, column=3, padx='5',pady='5', sticky='en')
 b_edit_in_list.config(state='disabled')
 
 b_delete_in_list = tk.Button(w_main, text='Удалить', 
-                   height='4', width='13', 
-                   bg='lightgreen', font=('arial', 12), 
+                   height='4', width='20', 
+                   bg='pink', font=('arial', 12), 
                    command=b_click.delete_in_list_on_click)
-b_delete_in_list.grid(row=4, column=4, padx='5',pady='5', sticky='wn')
+b_delete_in_list.grid(row=4, column=4, padx='5',pady='5', sticky='en')
 b_delete_in_list.config(state='disabled')
 
 b_help = tk.Button(w_main, text='=?=', 
-                   height='3', width='5', 
-                   bg='lightgreen', font=('arial', 12), 
+                   height='4', width='8', 
+                   bg='blue', fg='white', font=('arial', 12), 
                    command=b_click.help_on_click)
 b_help.grid(row=4, column=5, padx='5',pady='5', sticky='wn')
 
