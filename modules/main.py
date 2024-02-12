@@ -2,10 +2,12 @@ import tkinter as tk
 import tkinter.ttk as ttk
 import b_click, constants
 
+is_download = False
+
 w_main = tk.Tk()
 t_main = ttk.Treeview(columns=constants.t_col, show='headings')
 main_menu = tk.Menu()
-file_menu= tk.Menu()
+file_menu= tk.Menu(tearoff=0)
 
 def update_treeview(new_data):
     t_main.delete(*t_main.get_children())
@@ -33,10 +35,10 @@ l_title.grid(columnspan='2', row=0)
 
 #MAIN MENU AREA
 main_menu.add_cascade(label="Инструменты", menu=file_menu)
-file_menu.add_command(label='Загрузить данные', command=b_click.download_on_click)
+file_menu.add_command(label='Загрузить данные', command=b_click.download_on_click(is_download))
 file_menu.add_command(label='Вывести данные', command=update_table)
 file_menu.add_separator()
-file_menu.add_command(label="Выйти")
+file_menu.add_command(label="Выйти", command=quit)
 
 
 
