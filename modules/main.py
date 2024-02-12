@@ -18,7 +18,7 @@ def update_table():
     update_treeview(b_click.data_mass)
 
 #MAIN WINDOW AREA
-w_main.geometry('720x500+400+150')
+w_main.geometry('730x400+400+150')
 w_main.title('КТСС')
 w_main.resizable(False, False)
 icon = tk.PhotoImage(file='./img/icon.png')
@@ -73,7 +73,7 @@ t_main.column('Price_mms', width='50', minwidth='50')
 t_main.column('free_mb', width='50', minwidth='50')
 t_main.column('price_mb', width='50', minwidth='50')
 
-t_main.grid(column='1', row='1', rowspan='3', sticky='esn')
+t_main.grid(column='1', row='1', rowspan='3', sticky='esn', padx='4')
 
 #####
 scrollbar = ttk.Scrollbar(orient='vertical', command=t_main.yview)
