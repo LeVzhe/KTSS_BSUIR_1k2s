@@ -9,6 +9,13 @@ t_main = ttk.Treeview(columns=constants.t_col, show='headings')
 main_menu = tk.Menu()
 file_menu= tk.Menu(tearoff=0)
 
+def download_data():
+    global is_download
+    if is_download:
+        return
+    b_click.download_on_click()
+    is_download = True
+
 def update_treeview(new_data):
     t_main.delete(*t_main.get_children())
     for el in new_data:
@@ -16,6 +23,98 @@ def update_treeview(new_data):
 
 def update_table():
     update_treeview(b_click.data_mass)
+
+
+
+def open_fill_window():
+    def add_row():
+        name = entry_name.get()
+        subscr = entry_subscr.get()
+        mins_in = entry_mins_in.get()
+        mins_out = entry_mins_out.get()
+        price_roum = entry_price_roum.get()
+        price_in = entry_price_in.get()
+        price_out = entry_price_out.get()
+        free_sms = entry_free_sms.get()
+        free_mms = entry_free_mms.get()
+        price_sms = entry_price_sms.get()
+        price_mms = entry_price_mms.get()
+        free_mb = entry_free_mb.get()
+        price_mb = entry_price_mb.get()
+        t_main.insert('', 'end', text=str(len(t_main.get_children()) + 1), values=(name, subscr, mins_in, mins_out, price_roum,
+                                                                               price_in, price_out, free_sms, free_mms, price_sms,
+                                                                               price_mms, free_mb, price_mb))
+        new_window.destroy()
+
+    new_window = tk.Toplevel(w_main)
+    new_window.title("Добавить тариф")
+    new_window.geometry('750x100+400+300')
+    new_window.resizable(False, False)
+    new_window.focus_set()
+    new_window.attributes("-topmost", True)
+    label = tk.Label(new_window, text="Введите характеристики тарифного плана")
+    label.grid(column='0', row='0', columnspan='13', sticky='wn', padx='4')
+
+    entry_name = tk.Entry(new_window, width='19')
+    entry_name.grid(column='1', row='1')
+    label1 = tk.Label(new_window, text='Тариф')
+    label1.grid(column='1', row='2')
+    entry_subscr = tk.Entry(new_window, width='8')
+    entry_subscr.grid(column='2', row='1')
+    label2 = tk.Label(new_window, text='Аб.Пл')
+    label2.grid(column='2', row='2')
+    entry_mins_in = tk.Entry(new_window, width='8')
+    entry_mins_in.grid(column='3', row='1')
+    label3 = tk.Label(new_window, text='Мин.В')
+    label3.grid(column='3', row='2')
+    entry_mins_out = tk.Entry(new_window, width='8')
+    entry_mins_out.grid(column='4', row='1')
+    label4 = tk.Label(new_window, text='Мин.Др')
+    label4.grid(column='4', row='2')
+    entry_price_roum = tk.Entry(new_window, width='8')
+    entry_price_roum.grid(column='5', row='1')
+    label5 = tk.Label(new_window, text='Ст.Роу')
+    label5.grid(column='5', row='2')
+    entry_price_in = tk.Entry(new_window, width='8')
+    entry_price_in.grid(column='6', row='1')
+    label6 = tk.Label(new_window, text='Ст.Вн.с')
+    label6.grid(column='6', row='2')
+    entry_price_out = tk.Entry(new_window, width='8')
+    entry_price_out.grid(column='7', row='1')
+    label7 = tk.Label(new_window, text='Ст.Др.с')
+    label7.grid(column='7', row='2')
+    entry_free_sms = tk.Entry(new_window, width='8')
+    entry_free_sms.grid(column='8', row='1')
+    label8 = tk.Label(new_window, text='К.СМС')
+    label8.grid(column='8', row='2')
+    entry_free_mms = tk.Entry(new_window, width='8')
+    entry_free_mms.grid(column='9', row='1')
+    label9 = tk.Label(new_window, text='К.ММС')
+    label9.grid(column='9', row='2')
+    entry_price_sms = tk.Entry(new_window, width='8')
+    entry_price_sms.grid(column='10', row='1')
+    label10 = tk.Label(new_window, text='Ст.СМС')
+    label10.grid(column='10', row='2')
+    entry_price_mms = tk.Entry(new_window, width='8')
+    entry_price_mms.grid(column='11', row='1')
+    label11 = tk.Label(new_window, text='Ст.ММС')
+    label11.grid(column='11', row='2')
+    entry_free_mb = tk.Entry(new_window, width='9')
+    entry_free_mb.grid(column='12', row='1')
+    label12 = tk.Label(new_window, text='Кол.Мб')
+    label12.grid(column='12', row='2')
+    entry_price_mb = tk.Entry(new_window, width='8')
+    entry_price_mb.grid(column='13', row='1')
+    label13 = tk.Label(new_window, text='Ст.Мб')
+    label13.grid(column='13', row='2')
+
+    button_add = tk.Button(new_window, text='Добавить', command=add_row, width='7')
+    button_exit = tk.Button(new_window, text='Выход', command=new_window.destroy, width='6')
+    button_add.grid(column='12', row='3')
+    button_exit.grid(column='13', row='3')
+
+def add_data():
+    open_fill_window()
 
 #MAIN WINDOW AREA
 w_main.geometry('730x400+400+150')
@@ -35,8 +134,9 @@ l_title.grid(columnspan='2', row=0)
 
 #MAIN MENU AREA
 main_menu.add_cascade(label="Инструменты", menu=file_menu)
-file_menu.add_command(label='Загрузить данные', command=b_click.download_on_click(is_download))
-file_menu.add_command(label='Вывести данные', command=update_table)
+file_menu.add_command(label='Загрузить список тарифов', command=download_data)
+file_menu.add_command(label='Вывести список тарифов', command=update_table)
+file_menu.add_command(label='Добавить тариф в список', command=add_data)
 file_menu.add_separator()
 file_menu.add_command(label="Выйти", command=quit)
 
@@ -53,7 +153,7 @@ t_main.heading('price_in', text='Ст.Вн.с')
 t_main.heading('free_sms', text='Кол.СМС')
 t_main.heading('free_mms', text='Кол.ММС')
 t_main.heading('price_sms', text='Ст.СМС')
-t_main.heading('Price_mms', text='Ст.ММС')
+t_main.heading('price_mms', text='Ст.ММС')
 t_main.heading('free_mb', text='Кол.Мб')
 t_main.heading('price_mb', text='Ст.Мб')
 t_main.heading('price_out', text='Ст.Др.с')
@@ -69,7 +169,7 @@ t_main.column('price_out', width='50', minwidth='50')
 t_main.column('free_sms', width='50', minwidth='50')
 t_main.column('free_mms', width='50', minwidth='50')
 t_main.column('price_sms', width='50', minwidth='50')
-t_main.column('Price_mms', width='50', minwidth='50')
+t_main.column('price_mms', width='50', minwidth='50')
 t_main.column('free_mb', width='50', minwidth='50')
 t_main.column('price_mb', width='50', minwidth='50')
 
