@@ -4,6 +4,20 @@ import b_click, constants
 
 is_download = False
 
+def is_int(str):
+    try:
+        int(str)
+        return True
+    except ValueError:
+        return False
+    
+def is_number(str):
+    try:
+        float(str)
+        return True
+    except ValueError:
+        return False
+
 def on_click(event):
     
     item_id = t_main.identify_row(event.y)
@@ -55,9 +69,11 @@ def open_edit_window():
             entry.delete(0, "end")
             entry.insert(0, '')
 
+
     def on_focusout(event, entry, el):
         if entry.get() == '':
             entry.insert(0, el)
+
     
     item_id = t_main.focus() 
 
@@ -65,21 +81,47 @@ def open_edit_window():
 
     def edit_row():
         name = entry_name.get() or values[0]
+        if len(name) > 10:
+            name = values[0]
         subscr = entry_subscr.get() or values[1]
+        if (len(subscr) > 5) or (not is_number(subscr)):
+            subscr = values[1][:-2]
         mins_in = entry_mins_in.get() or values[2]
+        if (len(mins_in) > 5) or (not is_int(mins_in)):
+            mins_in = values[2]
         mins_out = entry_mins_out.get() or values[3]
+        if (len(mins_out) > 5) or (not is_int(mins_out)):
+            mins_out = values[3]
         price_roum = entry_price_roum.get() or values[4]
+        if (len(price_roum) > 5) or (not is_number(price_roum)):
+            price_roum = values[4][:-2]
         price_in = entry_price_in.get() or values[5]
+        if (len(price_in) > 5) or (not is_number(price_in)):
+            price_in = values[5][:-2]
         price_out = entry_price_out.get() or values[6]
+        if (len(price_out) > 5) or (not is_number(price_out)):
+            price_out = values[6][:-2]
         free_sms = entry_free_sms.get() or values[7]
+        if (len(free_sms) > 5) or (not is_int(free_sms)):
+            free_sms = values[7]
         free_mms = entry_free_mms.get() or values[8]
+        if (len(free_mms) > 5) or (not is_int(free_mms)):
+            free_mms = values[8]
         price_sms = entry_price_sms.get() or values[9]
+        if (len(price_sms) > 5) or (not is_number(price_sms)):
+            price_sms = values[9][:-2]
         price_mms = entry_price_mms.get() or values[10]
+        if (len(price_mms) > 5) or (not is_number(price_mms)):
+            price_mms = values[10][:-2]
         free_mb = entry_free_mb.get() or values[11]
-        price_mb = entry_price_mb.get() or values[12]        
+        if (len(free_mb) > 5) or (not is_int(free_mb)):
+            free_mb = values[11]
+        price_mb = entry_price_mb.get() or values[12]
+        if (len(price_mb) > 5) or (not is_number(price_mb)):
+            price_mb = values[12][:-2]
         
-        t_main.item(item_id, values=(name, subscr, mins_in, mins_out, price_roum, price_in, price_out,
-                                     free_sms, free_mms, price_sms, price_mms, free_mb, price_mb))
+        t_main.item(item_id, values=(name, subscr + 'r.', mins_in, mins_out, price_roum + 'r.', price_in + 'r.', price_out + 'r.',
+                                     free_sms, free_mms, price_sms + 'r.', price_mms + 'r.', free_mb, price_mb + 'r.'))
         new_window.destroy()   
 
     new_window = tk.Toplevel(w_main)
@@ -100,8 +142,8 @@ def open_edit_window():
     label1.grid(column='1', row='1')
     entry_subscr = tk.Entry(new_window, width='8')
     entry_subscr.grid(column='2', row='2')
-    entry_subscr.bind('<FocusIn>', on_entry_click('', entry_subscr, values[1]))
-    entry_subscr.bind('<FocusOut>', on_focusout('', entry_subscr, values[1]))
+    entry_subscr.bind('<FocusIn>', on_entry_click('', entry_subscr, values[1][:-2]))
+    entry_subscr.bind('<FocusOut>', on_focusout('', entry_subscr, values[1][:-2]))
     label2 = tk.Label(new_window, text='Аб.Пл')
     label2.grid(column='2', row='1')
     entry_mins_in = tk.Entry(new_window, width='8')
@@ -118,20 +160,20 @@ def open_edit_window():
     label4.grid(column='4', row='1')
     entry_price_roum = tk.Entry(new_window, width='8')
     entry_price_roum.grid(column='5', row='2')
-    entry_price_roum.bind('<FocusIn>', on_entry_click('', entry_price_roum, values[4]))
-    entry_price_roum.bind('<FocusOut>', on_focusout('', entry_price_roum, values[4]))
+    entry_price_roum.bind('<FocusIn>', on_entry_click('', entry_price_roum, values[4][:-2]))
+    entry_price_roum.bind('<FocusOut>', on_focusout('', entry_price_roum, values[4][:-2]))
     label5 = tk.Label(new_window, text='Ст.Роу')
     label5.grid(column='5', row='1')
     entry_price_in = tk.Entry(new_window, width='8')
     entry_price_in.grid(column='6', row='2')
-    entry_price_in.bind('<FocusIn>', on_entry_click('', entry_price_in, values[5]))
-    entry_price_in.bind('<FocusOut>', on_focusout('', entry_price_in, values[5]))
+    entry_price_in.bind('<FocusIn>', on_entry_click('', entry_price_in, values[5][:-2]))
+    entry_price_in.bind('<FocusOut>', on_focusout('', entry_price_in, values[5][:-2]))
     label6 = tk.Label(new_window, text='Ст.Вн.с')
     label6.grid(column='6', row='1')
     entry_price_out = tk.Entry(new_window, width='8')
     entry_price_out.grid(column='7', row='2')
-    entry_price_out.bind('<FocusIn>', on_entry_click('', entry_price_out, values[6]))
-    entry_price_out.bind('<FocusOut>', on_focusout('', entry_price_out, values[6]))
+    entry_price_out.bind('<FocusIn>', on_entry_click('', entry_price_out, values[6][:-2]))
+    entry_price_out.bind('<FocusOut>', on_focusout('', entry_price_out, values[6][:-2]))
     label7 = tk.Label(new_window, text='Ст.Др.с')
     label7.grid(column='7', row='1')
     entry_free_sms = tk.Entry(new_window, width='8')
@@ -148,14 +190,14 @@ def open_edit_window():
     label9.grid(column='9', row='1')
     entry_price_sms = tk.Entry(new_window, width='8')
     entry_price_sms.grid(column='10', row='2')
-    entry_price_sms.bind('<FocusIn>', on_entry_click('', entry_price_sms, values[9]))
-    entry_price_sms.bind('<FocusOut>', on_focusout('', entry_price_sms, values[9]))
+    entry_price_sms.bind('<FocusIn>', on_entry_click('', entry_price_sms, values[9][:-2]))
+    entry_price_sms.bind('<FocusOut>', on_focusout('', entry_price_sms, values[9][:-2]))
     label10 = tk.Label(new_window, text='Ст.СМС')
     label10.grid(column='10', row='1')
     entry_price_mms = tk.Entry(new_window, width='8')
     entry_price_mms.grid(column='11', row='2')
-    entry_price_mms.bind('<FocusIn>', on_entry_click('', entry_price_mms, values[10]))
-    entry_price_mms.bind('<FocusOut>', on_focusout('', entry_price_mms, values[10]))
+    entry_price_mms.bind('<FocusIn>', on_entry_click('', entry_price_mms, values[10][:-2]))
+    entry_price_mms.bind('<FocusOut>', on_focusout('', entry_price_mms, values[10][:-2]))
     label11 = tk.Label(new_window, text='Ст.ММС')
     label11.grid(column='11', row='1')
     entry_free_mb = tk.Entry(new_window, width='9')
@@ -166,8 +208,8 @@ def open_edit_window():
     label12.grid(column='12', row='1')
     entry_price_mb = tk.Entry(new_window, width='8')
     entry_price_mb.grid(column='13', row='2')
-    entry_price_mb.bind('<FocusIn>', on_entry_click('', entry_price_mb, values[12]))
-    entry_price_mb.bind('<FocusOut>', on_focusout('', entry_price_mb, values[12]))
+    entry_price_mb.bind('<FocusIn>', on_entry_click('', entry_price_mb, values[12][:-2]))
+    entry_price_mb.bind('<FocusOut>', on_focusout('', entry_price_mb, values[12][:-2]))
     label13 = tk.Label(new_window, text='Ст.Мб')
     label13.grid(column='13', row='1') 
     
