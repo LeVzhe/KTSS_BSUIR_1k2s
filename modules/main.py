@@ -41,7 +41,9 @@ def update_table():
     update_treeview(b_click.data_mass)
 
 def delete_line():
-    selected_item = t_main.selection()[0] ## get selected item
+    if t_main.focus() == '':
+        return
+    selected_item = t_main.selection()[0]
     t_main.delete(selected_item)
 
 def open_edit_window():
