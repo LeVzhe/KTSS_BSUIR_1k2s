@@ -47,9 +47,16 @@ def delete_line():
     t_main.delete(selected_item)
 
 def open_edit_window():
-
     if t_main.focus() == '':
         return
+    def on_entry_click(event, entry, el):
+        if entry.get() == el:
+            entry.delete(0, "end")
+            entry.insert(0, '')
+
+    def on_focusout(event, entry, el):
+        if entry.get() == '':
+            entry.insert(0, el)
     
     item_id = t_main.focus() 
 
@@ -83,7 +90,10 @@ def open_edit_window():
     label = tk.Label(new_window, text="Введите характеристики тарифного плана")
     label.grid(column='0', row='0', columnspan='13', sticky='wn', padx='4')
 
+
     entry_name = tk.Entry(new_window, width='19')
+    entry_name.bind('<FocusIn>', on_entry_click('', entry_name, values[0]))
+    entry_name.bind('<FocusOut>', on_focusout('', entry_name, values[0]))
     entry_name.grid(column='1', row='2')
     label1 = tk.Label(new_window, text='Тариф')
     label1.grid(column='1', row='1')
