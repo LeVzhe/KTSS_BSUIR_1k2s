@@ -228,60 +228,63 @@ def open_fill_window():
     def add_row():
         name = entry_name.get()
         if len(name) > 10 or len(name) <= 0:
-            mb.showerror("Ошибка", "Неверно имя")
+            #mb.showerror("Ошибка", "Неверно имя")
             name = ''
         subscr = entry_subscr.get()
         if len(subscr) > 5 or len(subscr) <= 0 or not is_number(subscr):
-            mb.showerror('Ошибка', 'Неверно абон. плата')
+            #mb.showerror('Ошибка', 'Неверно абон. плата')
             subscr = ''
         mins_in = entry_mins_in.get()
         if len(mins_in) > 5 or len(mins_in) <= 0 or not is_int(mins_in):
-            mb.showerror('Ошибка', 'Неверно мин. вн. с.')
+            #mb.showerror('Ошибка', 'Неверно мин. вн. с.')
             mins_in = ''
         mins_out = entry_mins_out.get()
         if len(mins_out) > 5 or len(mins_out) <= 0 or not is_int(mins_out):
-            mb.showerror('Ошибка', 'Неверно мин. др. с.')
+            #mb.showerror('Ошибка', 'Неверно мин. др. с.')
             mins_out = ''
         price_roum = entry_price_roum.get()
         if len(price_roum) > 5 or len(price_roum) <= 0 or not is_number(price_roum):
-            mb.showerror('Ошибка', 'Неверно ст. роум.')
+            #mb.showerror('Ошибка', 'Неверно ст. роум.')
             price_roum = ''
         price_in = entry_price_in.get()
         if len(price_in) > 5 or len(price_in) <= 0 or not is_number(price_in):
-            mb.showerror('Ошибка', 'Неверная ст. мин. вн. с.')
+            #mb.showerror('Ошибка', 'Неверная ст. мин. вн. с.')
             price_in = ''
         price_out = entry_price_out.get()
         if len(price_out) > 5 or len(price_out) <= 0 or not is_number(price_out):
-            mb.showerror('Ошибка', 'Неверная ст. мин. др. с.')
+            #mb.showerror('Ошибка', 'Неверная ст. мин. др. с.')
             price_out = ''
         free_sms = entry_free_sms.get()
         if len(free_sms) > 5 or len(free_sms) <= 0 or not is_int(free_sms):
-            mb.showerror('Ошибка', 'Неверная кол. смс')
+            #mb.showerror('Ошибка', 'Неверная кол. смс')
             free_sms = ''
         free_mms = entry_free_mms.get()
         if len(free_mms) > 5 or len(free_mms) <= 0 or not is_int(free_mms):
-            mb.showerror('Ошибка', 'Неверная кол. ммс')
+            #mb.showerror('Ошибка', 'Неверная кол. ммс')
             free_mms = ''
         price_sms = entry_price_sms.get()
         if len(price_sms) > 5 or len(price_sms) <= 0 or not is_number(price_sms):
-            mb.showerror('Ошибка', 'Неверная ст. смс')
+            #mb.showerror('Ошибка', 'Неверная ст. смс')
             price_sms = ''
         price_mms = entry_price_mms.get()
         if len(price_mms) > 5 or len(price_mms) <= 0 or not is_number(price_mms):
-            mb.showerror('Ошибка', 'Неверная ст. ммс')
+            #mb.showerror('Ошибка', 'Неверная ст. ммс')
             price_mms = ''
         free_mb = entry_free_mb.get()
         if len(free_mb) > 5 or len(free_mb) <= 0 or not is_int(free_mb):
-            mb.showerror('Ошибка', 'Неверная кол. мб')
+            #mb.showerror('Ошибка', 'Неверная кол. мб')
             free_mb = ''
         price_mb = entry_price_mb.get()
         if len(price_mb) > 5 or len(price_mb) <= 0 or not is_number(price_mb):
-            mb.showerror('Ошибка', 'Неверная ст. мб')
+            #mb.showerror('Ошибка', 'Неверная ст. мб')
             price_mb = ''
         if not(name == '') and not(subscr == '') and not(mins_in == '') and not(mins_out == '') and not(price_roum == '') and not(price_in == '') and not(price_out == '')and not(free_sms == '') and not(free_mms == '') and not(price_sms == '') and not(price_mms == '') and not(free_mb == '') and not(price_mb == ''):
             t_main.insert('', 'end', text=str(len(t_main.get_children()) + 1), values=(name, subscr + 'r.', mins_in, mins_out, price_roum + 'r.',
                                                                                price_in + 'r.', price_out + 'r.', free_sms, free_mms, price_sms + 'r.',
                                                                                price_mms + 'r.', free_mb, price_mb + 'r.'))
+        else:
+            mb.showerror('Ошибка', 'Неверный ввод')
+            open_fill_window()
         new_window.destroy()
         
 
