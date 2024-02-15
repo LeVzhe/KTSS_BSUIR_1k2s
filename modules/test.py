@@ -1,30 +1,39 @@
-import tkinter as tk
-from tkinter import ttk
+from tkinter import Tk, Button
+import tkinter.ttk as ttk
 
-root = tk.Tk()
+
+root = Tk()
+
 tree = ttk.Treeview(root)
-tree['columns'] = ('Name', 'Age')
-tree.heading('#0', text='ID')
-tree.heading('Name', text='Name')
-tree.heading('Age', text='Age')
 
-# Добавляем некоторые начальные строки
-tree.insert('', 'end', text='1', values=('Alice', 25))
-tree.insert('', 'end', text='2', values=('Bob', 30))
+tree["columns"]=("one","two")
+tree.column("one", width=100 )
+tree.column("two", width=100)
+tree.heading("one", text="coulmn A")
+tree.heading("two", text="column B")
 
-# Функция для добавления новой строки
-def add_row():
-    name = entry_name.get()
-    age = entry_age.get()
-    tree.insert('', 'end', text=str(len(tree.get_children()) + 1), values=(name, age))
+tree.insert("" , 0,    text="Line 1", values=("1A","1b"))
 
-# Создаем элементы управления для ввода данных
-entry_name = tk.Entry(root)
-entry_name.pack()
-entry_age = tk.Entry(root)
-entry_age.pack()
-button_add = tk.Button(root, text='Add Row', command=add_row)
-button_add.pack()
+id2 = tree.insert("", 1, "dir2", text="Dir 2")
+tree.insert(id2, "end", "dir 2", text="sub dir 2", values=("2A","2B"))
+
+##alternatively:
+tree.insert("", 3, "dir3", text="Dir 3")
+tree.insert("dir3", 3, text=" sub dir 3",values=("3A"," 3B"))
+
+def edit():
+    x = tree.get_children()
+    for item in x: ## Changing all children from root item
+        tree.item(item, text="blub", values=("foo", "bar"))
+
+def delete():
+    selected_item = tree.selection()[0] ## get selected item
+    tree.delete(selected_item)
 
 tree.pack()
+button_del = Button(root, text="del", command=delete)
+button_del.pack()
+button_del = Button(root, text="edit", command=edit)
+button_del.pack()
+
 root.mainloop()

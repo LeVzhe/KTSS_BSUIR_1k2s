@@ -24,7 +24,9 @@ def update_treeview(new_data):
 def update_table():
     update_treeview(b_click.data_mass)
 
-
+def delete_line():
+    selected_item = t_main.selection()[0] ## get selected item
+    t_main.delete(selected_item)
 
 def open_fill_window():
     def add_row():
@@ -137,6 +139,7 @@ main_menu.add_cascade(label="Инструменты", menu=file_menu)
 file_menu.add_command(label='Загрузить список тарифов', command=download_data)
 file_menu.add_command(label='Вывести список тарифов', command=update_table)
 file_menu.add_command(label='Добавить тариф в список', command=add_data)
+file_menu.add_command(label='Удалить тариф', command=delete_line)
 file_menu.add_separator()
 file_menu.add_command(label="Выйти", command=quit)
 
