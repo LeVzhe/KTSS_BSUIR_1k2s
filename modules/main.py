@@ -6,6 +6,7 @@ import re
 
 flag = False
 is_download = False
+is_view = False
 
 def is_int(str):
     try:
@@ -53,16 +54,24 @@ def update_treeview(new_data):
         t_main.insert("", "end", values=el)
 
 def update_table():
-    update_treeview(b_click.data_mass)
+    if is_download:
+        update_treeview(b_click.data_mass)
+        global is_view
+        is_view = True
+    else:
+        mb.showerror('Ошибка', 'Загрузите данные')
+        return
 
 def delete_line():
     if t_main.focus() == '':
+        mb.showerror('Ошибка', 'Выберите тариф')
         return
     selected_item = t_main.selection()[0]
     t_main.delete(selected_item)
 
 def open_edit_window():
     if t_main.focus() == '':
+        mb.showerror('Ошибка', 'Выберите тариф')
         return
     
     def on_entry_click(event, entry, el):
@@ -75,42 +84,27 @@ def open_edit_window():
         if entry.get() == '':
             entry.insert(0, el)
 
-    
     item_id = t_main.focus() 
 
     values = [t_main.set(item_id, column) for column in t_main['columns']]
 
     def edit_row():
         name = entry_name.get() or values[0]
-
         subscr = entry_subscr.get() or values[1]
-
         mins_in = entry_mins_in.get() or values[2]
-
         mins_out = entry_mins_out.get() or values[3]
-
         price_roum = entry_price_roum.get() or values[4]
-
         price_in = entry_price_in.get() or values[5]
-
         price_out = entry_price_out.get() or values[6]
-
         free_sms = entry_free_sms.get() or values[7]
-
         free_mms = entry_free_mms.get() or values[8]
-
         price_sms = entry_price_sms.get() or values[9]
-
         price_mms = entry_price_mms.get() or values[10]
-
         free_mb = entry_free_mb.get() or values[11]
-
         price_mb = entry_price_mb.get() or values[12]
 
-        
         t_main.item(item_id, values=(name, subscr, mins_in, mins_out, price_roum, price_in , price_out,
                                      free_sms, free_mms, price_sms, price_mms, free_mb, price_mb))
-           
 
     new_window = tk.Toplevel(w_main)
     new_window.title("Редактировать тариф")
@@ -219,6 +213,9 @@ def open_edit_window():
     button_exit.grid(column='1', row='14', pady='15', padx='10', sticky='w')
 
 def open_fill_window():
+    if not is_view:
+        mb.showerror('Ошибка', 'Выведите данные')
+        return
     def show_modal_error():
         modal_error_window = tk.Toplevel(new_window)
         modal_error_window.geometry('200x100+400+300')
