@@ -20,26 +20,10 @@ def is_number(str):
     except ValueError:
         return False
 
-def on_click(event):
-    
-    item_id = t_main.identify_row(event.y)
-    t_main.selection_set(item_id)
-    t_main.focus(item_id)
-
-    t_main.item(item_id, values=("New value 1", "New value 2"))
-    t_main.bind('<Return>', save_edit)
-
-def save_edit(event):
-    item_id = t_main.focus() 
-    values = [t_main.set(item_id, column) for column in t_main['columns']]
-    print('Saved values:', values)
-
 w_main = tk.Tk()
 t_main = ttk.Treeview(columns=constants.t_col, show='headings')
 main_menu = tk.Menu()
 file_menu= tk.Menu(tearoff=0)
-
-
 
 def download_data():
     global is_download
@@ -88,7 +72,7 @@ def open_edit_window():
             open_edit_window()
         subscr = entry_subscr.get() or values[1]
         if (len(subscr) > 5) or (not is_number(subscr)):
-            subscr = values[1][:-2]
+            subscr = values[1]
             open_edit_window()
         mins_in = entry_mins_in.get() or values[2]
         if (len(mins_in) > 5) or (not is_int(mins_in)):
@@ -100,15 +84,15 @@ def open_edit_window():
             open_edit_window()
         price_roum = entry_price_roum.get() or values[4]
         if (len(price_roum) > 5) or (not is_number(price_roum)):
-            price_roum = values[4][:-2]
+            price_roum = values[4]
             open_edit_window()
         price_in = entry_price_in.get() or values[5]
         if (len(price_in) > 5) or (not is_number(price_in)):
-            price_in = values[5][:-2]
+            price_in = values[5]
             open_edit_window()
         price_out = entry_price_out.get() or values[6]
         if (len(price_out) > 5) or (not is_number(price_out)):
-            price_out = values[6][:-2]
+            price_out = values[6]
             open_edit_window()
         free_sms = entry_free_sms.get() or values[7]
         if (len(free_sms) > 5) or (not is_int(free_sms)):
@@ -120,11 +104,11 @@ def open_edit_window():
             open_edit_window()
         price_sms = entry_price_sms.get() or values[9]
         if (len(price_sms) > 5) or (not is_number(price_sms)):
-            price_sms = values[9][:-2]
+            price_sms = values[9]
             open_edit_window()
         price_mms = entry_price_mms.get() or values[10]
         if (len(price_mms) > 5) or (not is_number(price_mms)):
-            price_mms = values[10][:-2]
+            price_mms = values[10]
             open_edit_window()
         free_mb = entry_free_mb.get() or values[11]
         if (len(free_mb) > 5) or (not is_int(free_mb)):
@@ -132,106 +116,106 @@ def open_edit_window():
             open_edit_window()
         price_mb = entry_price_mb.get() or values[12]
         if (len(price_mb) > 5) or (not is_number(price_mb)):
-            price_mb = values[12][:-2]
+            price_mb = values[12]
             open_edit_window()
         
-        t_main.item(item_id, values=(name, subscr + 'r.', mins_in, mins_out, price_roum + 'r.', price_in + 'r.', price_out + 'r.',
-                                     free_sms, free_mms, price_sms + 'r.', price_mms + 'r.', free_mb, price_mb + 'r.'))
-        new_window.destroy()   
+        t_main.item(item_id, values=(name, subscr, mins_in, mins_out, price_roum, price_in , price_out,
+                                     free_sms, free_mms, price_sms, price_mms, free_mb, price_mb))
+           
 
     new_window = tk.Toplevel(w_main)
     new_window.title("Редактировать тариф")
-    new_window.geometry('750x120+400+300')
+    new_window.geometry('450x380+400+300')
     new_window.resizable(False, False)
     new_window.focus_set()
     new_window.attributes("-topmost", True)
-    label = tk.Label(new_window, text="Введите характеристики тарифного плана")
-    label.grid(column='0', row='0', columnspan='13', sticky='wn', padx='4')
+    label = tk.Label(new_window, text="Введите характеристики тарифного плана:", font='Arial 14 bold')
+    label.grid(column='0', row='0', columnspan='2', sticky='wn', padx='4')
 
 
-    entry_name = tk.Entry(new_window, width='19')
+    entry_name = tk.Entry(new_window, width='20', justify='right')
     entry_name.bind('<FocusIn>', on_entry_click('', entry_name, values[0]))
     entry_name.bind('<FocusOut>', on_focusout('', entry_name, values[0]))
-    entry_name.grid(column='1', row='2')
+    entry_name.grid(column='1', row='1')
     label1 = tk.Label(new_window, text='Тариф')
-    label1.grid(column='1', row='1')
-    entry_subscr = tk.Entry(new_window, width='8')
-    entry_subscr.grid(column='2', row='2')
-    entry_subscr.bind('<FocusIn>', on_entry_click('', entry_subscr, values[1][:-2]))
-    entry_subscr.bind('<FocusOut>', on_focusout('', entry_subscr, values[1][:-2]))
-    label2 = tk.Label(new_window, text='Аб.Пл')
-    label2.grid(column='2', row='1')
-    entry_mins_in = tk.Entry(new_window, width='8')
-    entry_mins_in.grid(column='3', row='2')
+    label1.grid(column='0', row='1', sticky='e')
+    entry_subscr = tk.Entry(new_window, width='20', justify='right')
+    entry_subscr.grid(column='1', row='2')
+    entry_subscr.bind('<FocusIn>', on_entry_click('', entry_subscr, values[1]))
+    entry_subscr.bind('<FocusOut>', on_focusout('', entry_subscr, values[1]))
+    label2 = tk.Label(new_window, text='Абонентская плата, руб.')
+    label2.grid(column='0', row='2', sticky='e')
+    entry_mins_in = tk.Entry(new_window, width='20', justify='right')
+    entry_mins_in.grid(column='1', row='3')
     entry_mins_in.bind('<FocusIn>', on_entry_click('', entry_mins_in, values[2]))
     entry_mins_in.bind('<FocusOut>', on_focusout('', entry_mins_in, values[2]))
-    label3 = tk.Label(new_window, text='Мин.В')
-    label3.grid(column='3', row='1')
-    entry_mins_out = tk.Entry(new_window, width='8')
-    entry_mins_out.grid(column='4', row='2')
+    label3 = tk.Label(new_window, text='Минут внутри сети')
+    label3.grid(column='0', row='3', sticky='e')
+    entry_mins_out = tk.Entry(new_window, width='20', justify='right')
+    entry_mins_out.grid(column='1', row='4')
     entry_mins_out.bind('<FocusIn>', on_entry_click('', entry_mins_out, values[3]))
     entry_mins_out.bind('<FocusOut>', on_focusout('', entry_mins_out, values[3]))
-    label4 = tk.Label(new_window, text='Мин.Др')
-    label4.grid(column='4', row='1')
-    entry_price_roum = tk.Entry(new_window, width='8')
-    entry_price_roum.grid(column='5', row='2')
-    entry_price_roum.bind('<FocusIn>', on_entry_click('', entry_price_roum, values[4][:-2]))
-    entry_price_roum.bind('<FocusOut>', on_focusout('', entry_price_roum, values[4][:-2]))
-    label5 = tk.Label(new_window, text='Ст.Роу')
-    label5.grid(column='5', row='1')
-    entry_price_in = tk.Entry(new_window, width='8')
-    entry_price_in.grid(column='6', row='2')
-    entry_price_in.bind('<FocusIn>', on_entry_click('', entry_price_in, values[5][:-2]))
-    entry_price_in.bind('<FocusOut>', on_focusout('', entry_price_in, values[5][:-2]))
-    label6 = tk.Label(new_window, text='Ст.Вн.с')
-    label6.grid(column='6', row='1')
-    entry_price_out = tk.Entry(new_window, width='8')
-    entry_price_out.grid(column='7', row='2')
-    entry_price_out.bind('<FocusIn>', on_entry_click('', entry_price_out, values[6][:-2]))
-    entry_price_out.bind('<FocusOut>', on_focusout('', entry_price_out, values[6][:-2]))
-    label7 = tk.Label(new_window, text='Ст.Др.с')
-    label7.grid(column='7', row='1')
-    entry_free_sms = tk.Entry(new_window, width='8')
-    entry_free_sms.grid(column='8', row='2')
+    label4 = tk.Label(new_window, text='Минут в другие сети')
+    label4.grid(column='0', row='4', sticky='e')
+    entry_price_roum = tk.Entry(new_window, width='20', justify='right')
+    entry_price_roum.grid(column='1', row='5')
+    entry_price_roum.bind('<FocusIn>', on_entry_click('', entry_price_roum, values[4]))
+    entry_price_roum.bind('<FocusOut>', on_focusout('', entry_price_roum, values[4]))
+    label5 = tk.Label(new_window, text='Стоимость роуминга, руб.')
+    label5.grid(column='0', row='5', sticky='e')
+    entry_price_in = tk.Entry(new_window, width='20', justify='right')
+    entry_price_in.grid(column='1', row='6')
+    entry_price_in.bind('<FocusIn>', on_entry_click('', entry_price_in, values[5]))
+    entry_price_in.bind('<FocusOut>', on_focusout('', entry_price_in, values[5]))
+    label6 = tk.Label(new_window, text='Стоимость внутри сети, руб.')
+    label6.grid(column='0', row='6', sticky='e')
+    entry_price_out = tk.Entry(new_window, width='20', justify='right')
+    entry_price_out.grid(column='1', row='7')
+    entry_price_out.bind('<FocusIn>', on_entry_click('', entry_price_out, values[6]))
+    entry_price_out.bind('<FocusOut>', on_focusout('', entry_price_out, values[6]))
+    label7 = tk.Label(new_window, text='Стоимость на другие сети, руб.')
+    label7.grid(column='0', row='7', sticky='e')
+    entry_free_sms = tk.Entry(new_window, width='20', justify='right')
+    entry_free_sms.grid(column='1', row='8')
     entry_free_sms.bind('<FocusIn>', on_entry_click('', entry_free_sms, values[7]))
     entry_free_sms.bind('<FocusOut>', on_focusout('', entry_free_sms, values[7]))
-    label8 = tk.Label(new_window, text='К.СМС')
-    label8.grid(column='8', row='1')
-    entry_free_mms = tk.Entry(new_window, width='8')
-    entry_free_mms.grid(column='9', row='2')
+    label8 = tk.Label(new_window, text='Количество СМС')
+    label8.grid(column='0', row='8', sticky='e')
+    entry_free_mms = tk.Entry(new_window, width='20', justify='right')
+    entry_free_mms.grid(column='1', row='9')
     entry_free_mms.bind('<FocusIn>', on_entry_click('', entry_free_mms, values[8]))
     entry_free_mms.bind('<FocusOut>', on_focusout('', entry_free_mms, values[8]))
-    label9 = tk.Label(new_window, text='К.ММС')
-    label9.grid(column='9', row='1')
-    entry_price_sms = tk.Entry(new_window, width='8')
-    entry_price_sms.grid(column='10', row='2')
-    entry_price_sms.bind('<FocusIn>', on_entry_click('', entry_price_sms, values[9][:-2]))
-    entry_price_sms.bind('<FocusOut>', on_focusout('', entry_price_sms, values[9][:-2]))
-    label10 = tk.Label(new_window, text='Ст.СМС')
-    label10.grid(column='10', row='1')
-    entry_price_mms = tk.Entry(new_window, width='8')
-    entry_price_mms.grid(column='11', row='2')
-    entry_price_mms.bind('<FocusIn>', on_entry_click('', entry_price_mms, values[10][:-2]))
-    entry_price_mms.bind('<FocusOut>', on_focusout('', entry_price_mms, values[10][:-2]))
-    label11 = tk.Label(new_window, text='Ст.ММС')
-    label11.grid(column='11', row='1')
-    entry_free_mb = tk.Entry(new_window, width='9')
-    entry_free_mb.grid(column='12', row='2')
+    label9 = tk.Label(new_window, text='Количество ММС')
+    label9.grid(column='0', row='9', sticky='e')
+    entry_price_sms = tk.Entry(new_window, width='20', justify='right')
+    entry_price_sms.grid(column='1', row='10')
+    entry_price_sms.bind('<FocusIn>', on_entry_click('', entry_price_sms, values[9]))
+    entry_price_sms.bind('<FocusOut>', on_focusout('', entry_price_sms, values[9]))
+    label10 = tk.Label(new_window, text='Стоимость СМС, руб.')
+    label10.grid(column='0', row='10', sticky='e')
+    entry_price_mms = tk.Entry(new_window, width='20', justify='right')
+    entry_price_mms.grid(column='1', row='11')
+    entry_price_mms.bind('<FocusIn>', on_entry_click('', entry_price_mms, values[10]))
+    entry_price_mms.bind('<FocusOut>', on_focusout('', entry_price_mms, values[10]))
+    label11 = tk.Label(new_window, text='Стоимость ММС, руб.')
+    label11.grid(column='0', row='11', sticky='e')
+    entry_free_mb = tk.Entry(new_window, width='20', justify='right')
+    entry_free_mb.grid(column='1', row='12')
     entry_free_mb.bind('<FocusIn>', on_entry_click('', entry_free_mb, values[11]))
     entry_free_mb.bind('<FocusOut>', on_focusout('', entry_free_mb, values[11]))
-    label12 = tk.Label(new_window, text='Кол.Мб')
-    label12.grid(column='12', row='1')
-    entry_price_mb = tk.Entry(new_window, width='8')
-    entry_price_mb.grid(column='13', row='2')
-    entry_price_mb.bind('<FocusIn>', on_entry_click('', entry_price_mb, values[12][:-2]))
-    entry_price_mb.bind('<FocusOut>', on_focusout('', entry_price_mb, values[12][:-2]))
-    label13 = tk.Label(new_window, text='Ст.Мб')
-    label13.grid(column='13', row='1') 
+    label12 = tk.Label(new_window, text='Количество Мегабайт')
+    label12.grid(column='0', row='12', sticky='e')
+    entry_price_mb = tk.Entry(new_window, width='20', justify='right')
+    entry_price_mb.grid(column='1', row='13')
+    entry_price_mb.bind('<FocusIn>', on_entry_click('', entry_price_mb, values[12]))
+    entry_price_mb.bind('<FocusOut>', on_focusout('', entry_price_mb, values[12]))
+    label13 = tk.Label(new_window, text='Стоимость Мегабайт, руб.')
+    label13.grid(column='0', row='13', sticky='e') 
     
-    button_add = tk.Button(new_window, text='Добавить', command=edit_row, width='10')
+    button_add = tk.Button(new_window, text='Изменить', command=edit_row, width='10')
     button_exit = tk.Button(new_window, text='Выход', command=new_window.destroy, width='10')
-    button_add.grid(column='10', row='3', pady='15', padx='10', columnspan='2', sticky='e')
-    button_exit.grid(column='12', row='3', pady='15', padx='10', columnspan='2', sticky='w')
+    button_add.grid(column='0', row='14', pady='15', padx='10', sticky='e')
+    button_exit.grid(column='1', row='14', pady='15', padx='10', sticky='w')
 
  
 
@@ -292,9 +276,9 @@ def open_fill_window():
             #mb.showerror('Ошибка', 'Неверная ст. мб')
             price_mb = ''
         if not(name == '') and not(subscr == '') and not(mins_in == '') and not(mins_out == '') and not(price_roum == '') and not(price_in == '') and not(price_out == '')and not(free_sms == '') and not(free_mms == '') and not(price_sms == '') and not(price_mms == '') and not(free_mb == '') and not(price_mb == ''):
-            t_main.insert('', 'end', text=str(len(t_main.get_children()) + 1), values=(name, subscr + 'r.', mins_in, mins_out, price_roum + 'r.',
-                                                                               price_in + 'r.', price_out + 'r.', free_sms, free_mms, price_sms + 'r.',
-                                                                               price_mms + 'r.', free_mb, price_mb + 'r.'))
+            t_main.insert('', 'end', text=str(len(t_main.get_children()) + 1), values=(name, subscr, mins_in, mins_out, price_roum,
+                                                                               price_in, price_out, free_sms, free_mms, price_sms,
+                                                                               price_mms, free_mb, price_mb))
         else:
             mb.showerror('Ошибка', 'Неверный ввод')
             open_fill_window()
@@ -303,70 +287,70 @@ def open_fill_window():
 
     new_window = tk.Toplevel(w_main)
     new_window.title("Добавить тариф")
-    new_window.geometry('750x120+400+100')
+    new_window.geometry('450x380+200+100')
     new_window.resizable(False, False)
     new_window.focus_set()
     new_window.attributes("-topmost", True)
-    label = tk.Label(new_window, text="Введите характеристики тарифного плана")
-    label.grid(column='0', row='0', columnspan='13', sticky='wn', padx='4')
+    label = tk.Label(new_window, text="Введите характеристики тарифного плана:", font='Arial 14 bold')
+    label.grid(column='0', row='0', columnspan='2', sticky='wn', padx='4')
 
-    entry_name = tk.Entry(new_window, width='19')
-    entry_name.grid(column='1', row='2')
+    entry_name = tk.Entry(new_window, width='20', justify='right')
+    entry_name.grid(column='1', row='1')
     label1 = tk.Label(new_window, text='Тариф')
-    label1.grid(column='1', row='1')
-    entry_subscr = tk.Entry(new_window, width='8')
-    entry_subscr.grid(column='2', row='2')
-    label2 = tk.Label(new_window, text='Аб.Пл')
-    label2.grid(column='2', row='1')
-    entry_mins_in = tk.Entry(new_window, width='8')
-    entry_mins_in.grid(column='3', row='2')
-    label3 = tk.Label(new_window, text='Мин.В')
-    label3.grid(column='3', row='1')
-    entry_mins_out = tk.Entry(new_window, width='8')
-    entry_mins_out.grid(column='4', row='2')
-    label4 = tk.Label(new_window, text='Мин.Др')
-    label4.grid(column='4', row='1')
-    entry_price_roum = tk.Entry(new_window, width='8')
-    entry_price_roum.grid(column='5', row='2')
-    label5 = tk.Label(new_window, text='Ст.Роу')
-    label5.grid(column='5', row='1')
-    entry_price_in = tk.Entry(new_window, width='8')
-    entry_price_in.grid(column='6', row='2')
-    label6 = tk.Label(new_window, text='Ст.Вн.с')
-    label6.grid(column='6', row='1')
-    entry_price_out = tk.Entry(new_window, width='8')
-    entry_price_out.grid(column='7', row='2')
-    label7 = tk.Label(new_window, text='Ст.Др.с')
-    label7.grid(column='7', row='1')
-    entry_free_sms = tk.Entry(new_window, width='8')
-    entry_free_sms.grid(column='8', row='2')
-    label8 = tk.Label(new_window, text='К.СМС')
-    label8.grid(column='8', row='1')
-    entry_free_mms = tk.Entry(new_window, width='8')
-    entry_free_mms.grid(column='9', row='2')
-    label9 = tk.Label(new_window, text='К.ММС')
-    label9.grid(column='9', row='1')
-    entry_price_sms = tk.Entry(new_window, width='8')
-    entry_price_sms.grid(column='10', row='2')
-    label10 = tk.Label(new_window, text='Ст.СМС')
-    label10.grid(column='10', row='1')
-    entry_price_mms = tk.Entry(new_window, width='8')
-    entry_price_mms.grid(column='11', row='2')
-    label11 = tk.Label(new_window, text='Ст.ММС')
-    label11.grid(column='11', row='1')
-    entry_free_mb = tk.Entry(new_window, width='9')
-    entry_free_mb.grid(column='12', row='2')
-    label12 = tk.Label(new_window, text='Кол.Мб')
-    label12.grid(column='12', row='1')
-    entry_price_mb = tk.Entry(new_window, width='8')
-    entry_price_mb.grid(column='13', row='2')
-    label13 = tk.Label(new_window, text='Ст.Мб')
-    label13.grid(column='13', row='1')
+    label1.grid(column='0', row='1', sticky='e')
+    entry_subscr = tk.Entry(new_window, width='20', justify='right')
+    entry_subscr.grid(column='1', row='2')
+    label2 = tk.Label(new_window, text='Абонентская плата')
+    label2.grid(column='0', row='2', sticky='e')
+    entry_mins_in = tk.Entry(new_window, width='20', justify='right')
+    entry_mins_in.grid(column='1', row='3')
+    label3 = tk.Label(new_window, text='Мин внутри сети')
+    label3.grid(column='0', row='3', sticky='e')
+    entry_mins_out = tk.Entry(new_window, width='20', justify='right')
+    entry_mins_out.grid(column='1', row='4')
+    label4 = tk.Label(new_window, text='Минут на другие сети')
+    label4.grid(column='0', row='4', sticky='e')
+    entry_price_roum = tk.Entry(new_window, width='20', justify='right')
+    entry_price_roum.grid(column='1', row='5')
+    label5 = tk.Label(new_window, text='Стоимость роуминга')
+    label5.grid(column='0', row='5', sticky='e')
+    entry_price_in = tk.Entry(new_window, width='20', justify='right')
+    entry_price_in.grid(column='1', row='6')
+    label6 = tk.Label(new_window, text='Стоимость внутри сети')
+    label6.grid(column='0', row='6', sticky='e')
+    entry_price_out = tk.Entry(new_window, width='20')
+    entry_price_out.grid(column='1', row='7')
+    label7 = tk.Label(new_window, text='Стоимость на другие сети')
+    label7.grid(column='0', row='7', sticky='e')
+    entry_free_sms = tk.Entry(new_window, width='20')
+    entry_free_sms.grid(column='1', row='8')
+    label8 = tk.Label(new_window, text='Количество СМС')
+    label8.grid(column='0', row='8', sticky='e')
+    entry_free_mms = tk.Entry(new_window, width='20')
+    entry_free_mms.grid(column='1', row='9')
+    label9 = tk.Label(new_window, text='Количество ММС')
+    label9.grid(column='0', row='9', sticky='e')
+    entry_price_sms = tk.Entry(new_window, width='20', justify='right')
+    entry_price_sms.grid(column='1', row='10')
+    label10 = tk.Label(new_window, text='Стоимость СМС')
+    label10.grid(column='0', row='10', sticky='e')
+    entry_price_mms = tk.Entry(new_window, width='20', justify='right')
+    entry_price_mms.grid(column='1', row='11')
+    label11 = tk.Label(new_window, text='Стоимость ММС')
+    label11.grid(column='0', row='11', sticky='e')
+    entry_free_mb = tk.Entry(new_window, width='20', justify='right')
+    entry_free_mb.grid(column='1', row='12')
+    label12 = tk.Label(new_window, text='Количество Мегабайт')
+    label12.grid(column='0', row='12', sticky='e')
+    entry_price_mb = tk.Entry(new_window, width='20', justify='right')
+    entry_price_mb.grid(column='1', row='13')
+    label13 = tk.Label(new_window, text='Стоимость Мегабайт')
+    label13.grid(column='0', row='13', sticky='e')
 
     button_add = tk.Button(new_window, text='Добавить', command=add_row, width='10')
     button_exit = tk.Button(new_window, text='Выход', command=new_window.destroy, width='10')
-    button_add.grid(column='10', row='3', pady='15', padx='10', columnspan='2', sticky='e')
-    button_exit.grid(column='12', row='3', pady='15', padx='10', columnspan='2', sticky='w')
+    button_add.grid(column='0', row='14', pady='15', padx='10', sticky='e')
+    button_exit.grid(column='1', row='14', pady='15', padx='10', sticky='w')
 
 def add_data():
     open_fill_window()
