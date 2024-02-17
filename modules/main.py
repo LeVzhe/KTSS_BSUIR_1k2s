@@ -54,6 +54,12 @@ def download_data():
         return
     
     with open("./db/data.txt", "r") as db:
+        if db == '':
+            is_edit = False
+            is_download = True
+            is_view = False
+            is_saved = True
+            return
         mass = []
         lines = db.readlines()
         for line in lines:
@@ -62,7 +68,6 @@ def download_data():
             mass.append(el)
         test_mass = mass
 
-    #b_click.download_on_click()
     is_edit = False
     is_download = True
     is_view = False
