@@ -2,6 +2,7 @@ import tkinter as tk
 import tkinter.ttk as ttk
 import b_click, constants
 from tkinter import messagebox as mb
+import re
 
 flag = False
 is_download = False
@@ -24,6 +25,21 @@ w_main = tk.Tk()
 t_main = ttk.Treeview(columns=constants.t_col, show='headings')
 main_menu = tk.Menu()
 file_menu= tk.Menu(tearoff=0)
+
+def valid_int(newval):
+    return re.match("^\d{0,5}$", newval) is not None
+
+check_int = (w_main.register(valid_int), "%P")
+
+def valid_float(newval):
+    return re.match("^(?:\d{1,8}(?:\.\d{0,2})?|\d{1,10})$", newval) is not None
+
+check_float = (w_main.register(valid_float), "%P")
+
+def valid_tarif_name(newval):
+    return re.match("^[a-zA-Z](?:[\d]|(?:[^a-zA-Z]{0,2}[a-zA-Z]?)){0,9}$", newval) is not None
+
+check_tarif_name = (w_main.register(valid_tarif_name), "%P")
 
 def download_data():
     global is_download
@@ -224,64 +240,22 @@ def open_fill_window():
 
     def add_row():
         name = entry_name.get()
-        if len(name) > 10 or len(name) <= 0:
-            #mb.showerror("Ошибка", "Неверно имя")
-            name = ''
         subscr = entry_subscr.get()
-        if len(subscr) > 5 or len(subscr) <= 0 or not is_number(subscr):
-            #mb.showerror('Ошибка', 'Неверно абон. плата')
-            subscr = ''
         mins_in = entry_mins_in.get()
-        if len(mins_in) > 5 or len(mins_in) <= 0 or not is_int(mins_in):
-            #mb.showerror('Ошибка', 'Неверно мин. вн. с.')
-            mins_in = ''
         mins_out = entry_mins_out.get()
-        if len(mins_out) > 5 or len(mins_out) <= 0 or not is_int(mins_out):
-            #mb.showerror('Ошибка', 'Неверно мин. др. с.')
-            mins_out = ''
         price_roum = entry_price_roum.get()
-        if len(price_roum) > 5 or len(price_roum) <= 0 or not is_number(price_roum):
-            #mb.showerror('Ошибка', 'Неверно ст. роум.')
-            price_roum = ''
         price_in = entry_price_in.get()
-        if len(price_in) > 5 or len(price_in) <= 0 or not is_number(price_in):
-            #mb.showerror('Ошибка', 'Неверная ст. мин. вн. с.')
-            price_in = ''
         price_out = entry_price_out.get()
-        if len(price_out) > 5 or len(price_out) <= 0 or not is_number(price_out):
-            #mb.showerror('Ошибка', 'Неверная ст. мин. др. с.')
-            price_out = ''
         free_sms = entry_free_sms.get()
-        if len(free_sms) > 5 or len(free_sms) <= 0 or not is_int(free_sms):
-            #mb.showerror('Ошибка', 'Неверная кол. смс')
-            free_sms = ''
         free_mms = entry_free_mms.get()
-        if len(free_mms) > 5 or len(free_mms) <= 0 or not is_int(free_mms):
-            #mb.showerror('Ошибка', 'Неверная кол. ммс')
-            free_mms = ''
         price_sms = entry_price_sms.get()
-        if len(price_sms) > 5 or len(price_sms) <= 0 or not is_number(price_sms):
-            #mb.showerror('Ошибка', 'Неверная ст. смс')
-            price_sms = ''
         price_mms = entry_price_mms.get()
-        if len(price_mms) > 5 or len(price_mms) <= 0 or not is_number(price_mms):
-            #mb.showerror('Ошибка', 'Неверная ст. ммс')
-            price_mms = ''
         free_mb = entry_free_mb.get()
-        if len(free_mb) > 5 or len(free_mb) <= 0 or not is_int(free_mb):
-            #mb.showerror('Ошибка', 'Неверная кол. мб')
-            free_mb = ''
         price_mb = entry_price_mb.get()
-        if len(price_mb) > 5 or len(price_mb) <= 0 or not is_number(price_mb):
-            #mb.showerror('Ошибка', 'Неверная ст. мб')
-            price_mb = ''
-        if not(name == '') and not(subscr == '') and not(mins_in == '') and not(mins_out == '') and not(price_roum == '') and not(price_in == '') and not(price_out == '')and not(free_sms == '') and not(free_mms == '') and not(price_sms == '') and not(price_mms == '') and not(free_mb == '') and not(price_mb == ''):
-            t_main.insert('', 'end', text=str(len(t_main.get_children()) + 1), values=(name, subscr, mins_in, mins_out, price_roum,
+        
+        t_main.insert('', 'end', text=str(len(t_main.get_children()) + 1), values=(name, subscr, mins_in, mins_out, price_roum,
                                                                                price_in, price_out, free_sms, free_mms, price_sms,
                                                                                price_mms, free_mb, price_mb))
-        else:
-            mb.showerror('Ошибка', 'Неверный ввод')
-            open_fill_window()
         new_window.destroy()
         
 
@@ -294,57 +268,57 @@ def open_fill_window():
     label = tk.Label(new_window, text="Введите характеристики тарифного плана:", font='Arial 14 bold')
     label.grid(column='0', row='0', columnspan='2', sticky='wn', padx='4')
 
-    entry_name = tk.Entry(new_window, width='20', justify='right')
+    entry_name = tk.Entry(new_window, width='20', justify='right', validate='key', validatecommand=check_tarif_name)
     entry_name.grid(column='1', row='1')
     label1 = tk.Label(new_window, text='Тариф')
     label1.grid(column='0', row='1', sticky='e')
-    entry_subscr = tk.Entry(new_window, width='20', justify='right')
+    entry_subscr = tk.Entry(new_window, width='20', justify='right', validate="key", validatecommand=check_float)
     entry_subscr.grid(column='1', row='2')
-    label2 = tk.Label(new_window, text='Абонентская плата')
+    label2 = tk.Label(new_window, text='Абонентская плата, руб.')
     label2.grid(column='0', row='2', sticky='e')
-    entry_mins_in = tk.Entry(new_window, width='20', justify='right')
+    entry_mins_in = tk.Entry(new_window, width='20', justify='right', validate="key", validatecommand=check_int)
     entry_mins_in.grid(column='1', row='3')
     label3 = tk.Label(new_window, text='Мин внутри сети')
     label3.grid(column='0', row='3', sticky='e')
-    entry_mins_out = tk.Entry(new_window, width='20', justify='right')
+    entry_mins_out = tk.Entry(new_window, width='20', justify='right', validate="key", validatecommand=check_int)
     entry_mins_out.grid(column='1', row='4')
     label4 = tk.Label(new_window, text='Минут на другие сети')
     label4.grid(column='0', row='4', sticky='e')
-    entry_price_roum = tk.Entry(new_window, width='20', justify='right')
+    entry_price_roum = tk.Entry(new_window, width='20', justify='right', validate="key", validatecommand=check_float)
     entry_price_roum.grid(column='1', row='5')
-    label5 = tk.Label(new_window, text='Стоимость роуминга')
+    label5 = tk.Label(new_window, text='Стоимость роуминга, руб.')
     label5.grid(column='0', row='5', sticky='e')
-    entry_price_in = tk.Entry(new_window, width='20', justify='right')
+    entry_price_in = tk.Entry(new_window, width='20', justify='right', validate="key", validatecommand=check_float)
     entry_price_in.grid(column='1', row='6')
-    label6 = tk.Label(new_window, text='Стоимость внутри сети')
+    label6 = tk.Label(new_window, text='Стоимость внутри сети, руб.')
     label6.grid(column='0', row='6', sticky='e')
-    entry_price_out = tk.Entry(new_window, width='20')
+    entry_price_out = tk.Entry(new_window, width='20', justify='right', validate="key", validatecommand=check_float)
     entry_price_out.grid(column='1', row='7')
-    label7 = tk.Label(new_window, text='Стоимость на другие сети')
+    label7 = tk.Label(new_window, text='Стоимость на другие сети, руб.')
     label7.grid(column='0', row='7', sticky='e')
-    entry_free_sms = tk.Entry(new_window, width='20')
+    entry_free_sms = tk.Entry(new_window, width='20', justify='right', validate="key", validatecommand=check_int)
     entry_free_sms.grid(column='1', row='8')
     label8 = tk.Label(new_window, text='Количество СМС')
     label8.grid(column='0', row='8', sticky='e')
-    entry_free_mms = tk.Entry(new_window, width='20')
+    entry_free_mms = tk.Entry(new_window, width='20', justify='right', validate="key", validatecommand=check_int)
     entry_free_mms.grid(column='1', row='9')
     label9 = tk.Label(new_window, text='Количество ММС')
     label9.grid(column='0', row='9', sticky='e')
-    entry_price_sms = tk.Entry(new_window, width='20', justify='right')
+    entry_price_sms = tk.Entry(new_window, width='20', justify='right', validate="key", validatecommand=check_float)
     entry_price_sms.grid(column='1', row='10')
-    label10 = tk.Label(new_window, text='Стоимость СМС')
+    label10 = tk.Label(new_window, text='Стоимость СМС, руб.')
     label10.grid(column='0', row='10', sticky='e')
-    entry_price_mms = tk.Entry(new_window, width='20', justify='right')
+    entry_price_mms = tk.Entry(new_window, width='20', justify='right', validate="key", validatecommand=check_float)
     entry_price_mms.grid(column='1', row='11')
-    label11 = tk.Label(new_window, text='Стоимость ММС')
+    label11 = tk.Label(new_window, text='Стоимость ММС, руб.')
     label11.grid(column='0', row='11', sticky='e')
-    entry_free_mb = tk.Entry(new_window, width='20', justify='right')
+    entry_free_mb = tk.Entry(new_window, width='20', justify='right', validate="key", validatecommand=check_int)
     entry_free_mb.grid(column='1', row='12')
     label12 = tk.Label(new_window, text='Количество Мегабайт')
     label12.grid(column='0', row='12', sticky='e')
-    entry_price_mb = tk.Entry(new_window, width='20', justify='right')
+    entry_price_mb = tk.Entry(new_window, width='20', justify='right', validate="key", validatecommand=check_float)
     entry_price_mb.grid(column='1', row='13')
-    label13 = tk.Label(new_window, text='Стоимость Мегабайт')
+    label13 = tk.Label(new_window, text='Стоимость Мегабайт, руб.')
     label13.grid(column='0', row='13', sticky='e')
 
     button_add = tk.Button(new_window, text='Добавить', command=add_row, width='10')
