@@ -7,6 +7,9 @@ import re
 flag = False
 is_download = False
 is_view = False
+is_saved = True
+is_edit = False
+test_mass = []
 
 def is_int(str):
     try:
@@ -38,42 +41,71 @@ def valid_float(newval):
 check_float = (w_main.register(valid_float), "%P")
 
 def valid_tarif_name(newval):
-    return re.match("^[a-zA-Z](?:[\d]|(?:[^a-zA-Z]{0,2}[a-zA-Z]?)){0,9}$", newval) is not None
+    return re.match("^[a-zA-Zа-яА-Я](?:[\d]|(?:[^a-zA-Zа-яА-Я]{0,2}[a-zA-Zа-яА-Я]?)){0,9}$", newval) is not None
 check_tarif_name = (w_main.register(valid_tarif_name), "%P")
 
 def download_data():
     global is_download
+    global is_view
+    global is_saved
+    global is_edit
+    global test_mass
     if is_download:
         return
-    b_click.download_on_click()
+    
+    with open("./db/data.txt", "r") as db:
+        mass = []
+        lines = db.readlines()
+        for line in lines:
+            el = line.strip().split()
+            el = [e for e in el]
+            mass.append(el)
+        test_mass = mass
+
+    #b_click.download_on_click()
+    is_edit = False
     is_download = True
+    is_view = False
+    is_saved = True
 
 def update_treeview(new_data):
     t_main.delete(*t_main.get_children())
     for el in new_data:
-        t_main.insert("", "end", values=el)
+        t_main.insert('', "end", values=el)
 
 def update_table():
-    if is_download:
-        update_treeview(b_click.data_mass)
-        global is_view
+    global is_download
+    global is_view
+    global is_saved
+    global is_edit
+    if is_download or is_edit:
+        update_treeview(test_mass)
+        is_download = True
         is_view = True
+        is_edit = False
+        is_saved = True
     else:
         mb.showerror('Ошибка', 'Загрузите данные')
         return
 
 def delete_line():
+    global is_saved
+    global is_edit
     if t_main.focus() == '':
         mb.showerror('Ошибка', 'Выберите тариф')
         return
+    is_edit = True
+    is_saved = False
     selected_item = t_main.selection()[0]
     t_main.delete(selected_item)
 
 def open_edit_window():
+    global is_saved
+    global is_edit
+    global is_download
     if t_main.focus() == '':
         mb.showerror('Ошибка', 'Выберите тариф')
         return
-    
     def on_entry_click(event, entry, el):
         if entry.get() == el:
             entry.delete(0, "end")
@@ -105,6 +137,10 @@ def open_edit_window():
 
         t_main.item(item_id, values=(name, subscr, mins_in, mins_out, price_roum, price_in , price_out,
                                      free_sms, free_mms, price_sms, price_mms, free_mb, price_mb))
+        
+    is_edit = True    
+    is_saved = False
+    is_download = False
 
     new_window = tk.Toplevel(w_main)
     new_window.title("Редактировать тариф")
@@ -213,9 +249,11 @@ def open_edit_window():
     button_exit.grid(column='1', row='14', pady='15', padx='10', sticky='w')
 
 def open_fill_window():
+    global is_edit
     if not is_view:
         mb.showerror('Ошибка', 'Выведите данные')
         return
+    
     def show_modal_error():
         modal_error_window = tk.Toplevel(new_window)
         modal_error_window.geometry('200x100+400+300')
@@ -337,9 +375,43 @@ def open_fill_window():
     button_exit = tk.Button(new_window, text='Выход', command=new_window.destroy, width='10')
     button_add.grid(column='0', row='14', pady='15', padx='10', sticky='e')
     button_exit.grid(column='1', row='14', pady='15', padx='10', sticky='w')
+    is_edit = True
 
 def add_data():
+    global is_saved
+    global is_download
     open_fill_window()
+    is_saved = False
+
+    is_download = False
+
+def save_data():
+    global is_view
+    global is_saved
+    global is_download
+    global is_edit
+    if not is_view:
+        mb.showerror('Ошибка', 'Выведите данные')
+        return
+    else:
+        is_download = False
+        is_view = True
+        is_saved = True
+        is_edit = False
+        def get_treeview_data(tree):
+            data = []
+            for child in tree.get_children():
+                item = tree.item(child)
+                values = item["values"]
+                data.append(values)
+            return data
+        saved_data = get_treeview_data(t_main)
+        with open("./db/data.txt", "w") as file:
+            for line in saved_data:
+                line_as_str = [str(item) for item in line] 
+                file.write(' '.join(line_as_str) + '\n')
+
+
 
 #MAIN WINDOW AREA
 w_main.geometry('730x400+400+150')
@@ -363,6 +435,7 @@ file_menu.add_command(label='Загрузить список тарифов', co
 file_menu.add_command(label='Вывести список тарифов', command=update_table)
 file_menu.add_command(label='Добавить тариф в список', command=add_data)
 file_menu.add_command(label='Редактировать тариф', command=open_edit_window)
+file_menu.add_command(label='Сохранить список тарифов', command=save_data)
 file_menu.add_command(label='Удалить тариф', command=delete_line)
 file_menu.add_separator()
 file_menu.add_command(label="Выйти", command=quit)
