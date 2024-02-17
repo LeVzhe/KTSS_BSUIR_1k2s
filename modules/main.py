@@ -26,19 +26,18 @@ t_main = ttk.Treeview(columns=constants.t_col, show='headings')
 main_menu = tk.Menu()
 file_menu= tk.Menu(tearoff=0)
 
+errmsg = tk.StringVar()
+
 def valid_int(newval):
     return re.match("^\d{0,5}$", newval) is not None
-
 check_int = (w_main.register(valid_int), "%P")
 
 def valid_float(newval):
     return re.match("^(?:\d{1,8}(?:\.\d{0,2})?|\d{1,10})$", newval) is not None
-
 check_float = (w_main.register(valid_float), "%P")
 
 def valid_tarif_name(newval):
     return re.match("^[a-zA-Z](?:[\d]|(?:[^a-zA-Z]{0,2}[a-zA-Z]?)){0,9}$", newval) is not None
-
 check_tarif_name = (w_main.register(valid_tarif_name), "%P")
 
 def download_data():
@@ -237,6 +236,23 @@ def open_edit_window():
 
 
 def open_fill_window():
+    def show_modal_error():
+        modal_error_window = tk.Toplevel(new_window)
+        modal_error_window.geometry('200x100+400+300')
+        modal_error_window.resizable(False, False)
+        modal_error_window.title("Ошибка")
+        modal_error_window.transient(new_window)
+        modal_error_window.grab_set()
+        def close_modal_error():
+            modal_error_window.destroy()
+        
+        error_label = tk.Label(modal_error_window, text="Есть пустые поля")
+        error_label.pack(padx=20, pady=10)
+
+        ok_button = tk.Button(modal_error_window, text="OK", command=close_modal_error, width='10', height='2')
+        ok_button.pack(pady=10)
+
+        modal_error_window.wait_window()
 
     def add_row():
         name = entry_name.get()
@@ -252,16 +268,20 @@ def open_fill_window():
         price_mms = entry_price_mms.get()
         free_mb = entry_free_mb.get()
         price_mb = entry_price_mb.get()
-        
-        t_main.insert('', 'end', text=str(len(t_main.get_children()) + 1), values=(name, subscr, mins_in, mins_out, price_roum,
+        if (name=='' or subscr=='' or mins_in=='' or mins_out=='' or price_roum=='' or 
+        price_in=='' or price_in=='' or price_out=='' or free_sms=='' or free_mms=='' or 
+        price_sms=='' or price_mms=='' or free_mb=='' or price_mb==''):
+            show_modal_error()
+        else:
+            t_main.insert('', 'end', text=str(len(t_main.get_children()) + 1), values=(name, subscr, mins_in, mins_out, price_roum,
                                                                                price_in, price_out, free_sms, free_mms, price_sms,
                                                                                price_mms, free_mb, price_mb))
-        new_window.destroy()
+            new_window.destroy()
         
 
     new_window = tk.Toplevel(w_main)
     new_window.title("Добавить тариф")
-    new_window.geometry('450x380+200+100')
+    new_window.geometry('570x380+200+100')
     new_window.resizable(False, False)
     new_window.focus_set()
     new_window.attributes("-topmost", True)
@@ -272,50 +292,62 @@ def open_fill_window():
     entry_name.grid(column='1', row='1')
     label1 = tk.Label(new_window, text='Тариф')
     label1.grid(column='0', row='1', sticky='e')
+
     entry_subscr = tk.Entry(new_window, width='20', justify='right', validate="key", validatecommand=check_float)
     entry_subscr.grid(column='1', row='2')
     label2 = tk.Label(new_window, text='Абонентская плата, руб.')
     label2.grid(column='0', row='2', sticky='e')
+
     entry_mins_in = tk.Entry(new_window, width='20', justify='right', validate="key", validatecommand=check_int)
     entry_mins_in.grid(column='1', row='3')
     label3 = tk.Label(new_window, text='Мин внутри сети')
     label3.grid(column='0', row='3', sticky='e')
+    
     entry_mins_out = tk.Entry(new_window, width='20', justify='right', validate="key", validatecommand=check_int)
     entry_mins_out.grid(column='1', row='4')
     label4 = tk.Label(new_window, text='Минут на другие сети')
     label4.grid(column='0', row='4', sticky='e')
+    
     entry_price_roum = tk.Entry(new_window, width='20', justify='right', validate="key", validatecommand=check_float)
     entry_price_roum.grid(column='1', row='5')
     label5 = tk.Label(new_window, text='Стоимость роуминга, руб.')
     label5.grid(column='0', row='5', sticky='e')
+    
     entry_price_in = tk.Entry(new_window, width='20', justify='right', validate="key", validatecommand=check_float)
     entry_price_in.grid(column='1', row='6')
     label6 = tk.Label(new_window, text='Стоимость внутри сети, руб.')
     label6.grid(column='0', row='6', sticky='e')
+    
     entry_price_out = tk.Entry(new_window, width='20', justify='right', validate="key", validatecommand=check_float)
     entry_price_out.grid(column='1', row='7')
     label7 = tk.Label(new_window, text='Стоимость на другие сети, руб.')
     label7.grid(column='0', row='7', sticky='e')
+    
     entry_free_sms = tk.Entry(new_window, width='20', justify='right', validate="key", validatecommand=check_int)
     entry_free_sms.grid(column='1', row='8')
     label8 = tk.Label(new_window, text='Количество СМС')
     label8.grid(column='0', row='8', sticky='e')
+    
     entry_free_mms = tk.Entry(new_window, width='20', justify='right', validate="key", validatecommand=check_int)
     entry_free_mms.grid(column='1', row='9')
     label9 = tk.Label(new_window, text='Количество ММС')
     label9.grid(column='0', row='9', sticky='e')
+    
     entry_price_sms = tk.Entry(new_window, width='20', justify='right', validate="key", validatecommand=check_float)
     entry_price_sms.grid(column='1', row='10')
     label10 = tk.Label(new_window, text='Стоимость СМС, руб.')
     label10.grid(column='0', row='10', sticky='e')
+    
     entry_price_mms = tk.Entry(new_window, width='20', justify='right', validate="key", validatecommand=check_float)
     entry_price_mms.grid(column='1', row='11')
     label11 = tk.Label(new_window, text='Стоимость ММС, руб.')
     label11.grid(column='0', row='11', sticky='e')
+    
     entry_free_mb = tk.Entry(new_window, width='20', justify='right', validate="key", validatecommand=check_int)
     entry_free_mb.grid(column='1', row='12')
     label12 = tk.Label(new_window, text='Количество Мегабайт')
     label12.grid(column='0', row='12', sticky='e')
+    
     entry_price_mb = tk.Entry(new_window, width='20', justify='right', validate="key", validatecommand=check_float)
     entry_price_mb.grid(column='1', row='13')
     label13 = tk.Label(new_window, text='Стоимость Мегабайт, руб.')
