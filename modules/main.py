@@ -416,31 +416,80 @@ def save_data():
                 line_as_str = [str(item) for item in line] 
                 file.write(' '.join(line_as_str) + '\n')
 
+def remove_arrow(text):
+    if "\u2191" in text:
+        return text.replace("\u2191", "")
+    if "\u2193" in text:
+        return text.replace("\u2193", "")
+    return text
+
 def sort_int(col, reverse, name):
     arrow = "\u2191" if reverse else "\u2193"
+
+    for col_id in t_main["columns"]:
+        heading_text = t_main.heading(col_id)["text"]
+        t_main.heading(col_id, text=remove_arrow(heading_text))
+
     t_main.heading(col, text=f"{name} {arrow}")
+    
     data = [(int(t_main.set(k, col)), k) for k in t_main.get_children("")]
     data.sort(reverse=reverse)
     for index, (_, k) in enumerate(data):
         t_main.move(k, "", index)
+    
+    t_main.heading(col, command=lambda: sort_int(col, not reverse, name))
+    
+    data = [(int(t_main.set(k, col)), k) for k in t_main.get_children("")]
+    data.sort(reverse=reverse)
+    for index, (_, k) in enumerate(data):
+        t_main.move(k, "", index)
+
     t_main.heading(col, command=lambda: sort_int(col, not reverse, name))
 
 def sort_float(col, reverse, name):
     arrow = "\u2191" if reverse else "\u2193"
+
+    for col_id in t_main["columns"]:
+        heading_text = t_main.heading(col_id)["text"]
+        t_main.heading(col_id, text=remove_arrow(heading_text))
+
     t_main.heading(col, text=f"{name} {arrow}")
+    
     data = [(float(t_main.set(k, col)), k) for k in t_main.get_children("")]
     data.sort(reverse=reverse)
     for index, (_, k) in enumerate(data):
         t_main.move(k, "", index)
+
+    t_main.heading(col, command=lambda: sort_float(col, not reverse, name))
+    
+    data = [(int(t_main.set(k, col)), k) for k in t_main.get_children("")]
+    data.sort(reverse=reverse)
+    for index, (_, k) in enumerate(data):
+        t_main.move(k, "", index)
+
     t_main.heading(col, command=lambda: sort_float(col, not reverse, name))
 
 def sort(col, reverse, name):
     arrow = "\u2191" if reverse else "\u2193"
+
+    for col_id in t_main["columns"]:
+        heading_text = t_main.heading(col_id)["text"]
+        t_main.heading(col_id, text=remove_arrow(heading_text))
+
     t_main.heading(col, text=f"{name} {arrow}")
+    
     data = [(t_main.set(k, col), k) for k in t_main.get_children("")]
     data.sort(reverse=reverse)
     for index, (_, k) in enumerate(data):
         t_main.move(k, "", index)
+
+    t_main.heading(col, command=lambda: sort(col, not reverse, name))
+    
+    data = [(t_main.set(k, col), k) for k in t_main.get_children("")]
+    data.sort(reverse=reverse)
+    for index, (_, k) in enumerate(data):
+        t_main.move(k, "", index)
+
     t_main.heading(col, command=lambda: sort(col, not reverse, name))
 
 #MAIN WINDOW AREA
@@ -473,19 +522,19 @@ file_menu.add_command(label="Выйти", command=quit)
 w_main.config(menu=main_menu)
 
 #TABLE AREA
-t_main.heading('name', text='Тариф\u2191', command=lambda: sort(0, False, 'Тариф'))
-t_main.heading('subscr', text='Абон. Пл.\u2191', command=lambda: sort_float(1, False, 'Абон. Пл.'))
-t_main.heading('mins_in', text='Мин. Вн. С.\u2191', command=lambda: sort_int(2, False, 'Мин. Вн. С.'))
-t_main.heading('mins_out', text='Мин. Др. С.\u2191', command=lambda: sort_int(3, False, 'Мин. Др. С.'))
-t_main.heading('price_roum', text='Ст. Роум.\u2191', command=lambda: sort_float(4, False, 'Ст. Роум.'))
-t_main.heading('price_in', text='Ст. Вн. С\u2191', command=lambda: sort_float(5, False, 'Ст. Вн. С'))
-t_main.heading('price_out', text='Ст. Др. С\u2191', command=lambda: sort_float(6, False, 'Ст. Др. С'))
-t_main.heading('free_sms', text='Кол. СМС\u2191', command=lambda: sort_int(7, False, 'Кол. СМС'))
-t_main.heading('free_mms', text='Кол. ММС\u2191', command=lambda: sort_int(8, False, 'Кол. ММС'))
-t_main.heading('price_sms', text='Ст. СМС\u2191', command=lambda: sort_float(9, False, 'Ст. СМС'))
-t_main.heading('price_mms', text='Ст. ММС\u2191', command=lambda: sort_float(10, False, 'Ст. ММС'))
-t_main.heading('free_mb', text='Кол. Мб\u2191', command=lambda: sort_int(11, False, 'Кол. Мб'))
-t_main.heading('price_mb', text='Ст. Мб\u2191', command=lambda: sort_float(12, False, 'Ст. Мб'))
+t_main.heading('name', text='Тариф', command=lambda: sort(0, False, 'Тариф'))
+t_main.heading('subscr', text='Абон. Пл.', command=lambda: sort_float(1, False, 'Абон. Пл.'))
+t_main.heading('mins_in', text='Мин. Вн. С.', command=lambda: sort_int(2, False, 'Мин. Вн. С.'))
+t_main.heading('mins_out', text='Мин. Др. С.', command=lambda: sort_int(3, False, 'Мин. Др. С.'))
+t_main.heading('price_roum', text='Ст. Роум.', command=lambda: sort_float(4, False, 'Ст. Роум.'))
+t_main.heading('price_in', text='Ст. Вн. С.', command=lambda: sort_float(5, False, 'Ст. Вн. С.'))
+t_main.heading('price_out', text='Ст. Др. С.', command=lambda: sort_float(6, False, 'Ст. Др. С.'))
+t_main.heading('free_sms', text='Кол. СМС', command=lambda: sort_int(7, False, 'Кол. СМС'))
+t_main.heading('free_mms', text='Кол. ММС', command=lambda: sort_int(8, False, 'Кол. ММС'))
+t_main.heading('price_sms', text='Ст. СМС', command=lambda: sort_float(9, False, 'Ст. СМС'))
+t_main.heading('price_mms', text='Ст. ММС', command=lambda: sort_float(10, False, 'Ст. ММС'))
+t_main.heading('free_mb', text='Кол. Мб', command=lambda: sort_int(11, False, 'Кол. Мб'))
+t_main.heading('price_mb', text='Ст. Мб', command=lambda: sort_float(12, False, 'Ст. Мб'))
 
 t_main.column('name', width='100', minwidth='100')
 t_main.column('subscr', width='100', minwidth='50')
