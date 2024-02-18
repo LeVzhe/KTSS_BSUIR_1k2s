@@ -416,7 +416,26 @@ def save_data():
                 line_as_str = [str(item) for item in line] 
                 file.write(' '.join(line_as_str) + '\n')
 
+def sort_int(col, reverse):
+    data = [(int(t_main.set(k, col)), k) for k in t_main.get_children("")]
+    data.sort(reverse=reverse)
+    for index, (_, k) in enumerate(data):
+        t_main.move(k, "", index)
+    t_main.heading(col, command=lambda: sort_int(col, not reverse))
 
+def sort_float(col, reverse):
+    data = [(float(t_main.set(k, col)), k) for k in t_main.get_children("")]
+    data.sort(reverse=reverse)
+    for index, (_, k) in enumerate(data):
+        t_main.move(k, "", index)
+    t_main.heading(col, command=lambda: sort_float(col, not reverse))
+
+def sort(col, reverse):
+    data = [(t_main.set(k, col), k) for k in t_main.get_children("")]
+    data.sort(reverse=reverse)
+    for index, (_, k) in enumerate(data):
+        t_main.move(k, "", index)
+    t_main.heading(col, command=lambda: sort(col, not reverse))
 
 #MAIN WINDOW AREA
 w_main.geometry('730x400+400+150')
@@ -448,19 +467,19 @@ file_menu.add_command(label="Выйти", command=quit)
 w_main.config(menu=main_menu)
 
 #TABLE AREA
-t_main.heading('name', text='Тариф')
-t_main.heading('mins_in', text='Мин.Вн.С.')
-t_main.heading('mins_out', text='Мин.Др.С.')
-t_main.heading('price_roum', text='Ст.Роум.')
-t_main.heading('price_in', text='Ст.Вн.с')
-t_main.heading('free_sms', text='Кол.СМС')
-t_main.heading('free_mms', text='Кол.ММС')
-t_main.heading('price_sms', text='Ст.СМС')
-t_main.heading('price_mms', text='Ст.ММС')
-t_main.heading('free_mb', text='Кол.Мб')
-t_main.heading('price_mb', text='Ст.Мб')
-t_main.heading('price_out', text='Ст.Др.с')
-t_main.heading('subscr', text='Абон.Пл.')
+t_main.heading('name', text='Тариф', command=lambda: sort(0, False))
+t_main.heading('subscr', text='Абон.Пл.', command=lambda: sort_float(1, False))
+t_main.heading('mins_in', text='Мин.Вн.С.', command=lambda: sort_int(2, False))
+t_main.heading('mins_out', text='Мин.Др.С.', command=lambda: sort_int(3, False))
+t_main.heading('price_roum', text='Ст.Роум.', command=lambda: sort_float(4, False))
+t_main.heading('price_in', text='Ст.Вн.с', command=lambda: sort_float(5, False))
+t_main.heading('price_out', text='Ст.Др.с', command=lambda: sort_float(6, False))
+t_main.heading('free_sms', text='Кол.СМС', command=lambda: sort_int(7, False))
+t_main.heading('free_mms', text='Кол.ММС', command=lambda: sort_int(8, False))
+t_main.heading('price_sms', text='Ст.СМС', command=lambda: sort_float(9, False))
+t_main.heading('price_mms', text='Ст.ММС', command=lambda: sort_float(10, False))
+t_main.heading('free_mb', text='Кол.Мб', command=lambda: sort_int(11, False))
+t_main.heading('price_mb', text='Ст.Мб', command=lambda: sort_float(12, False))
 
 t_main.column('name', width='100', minwidth='100')
 t_main.column('subscr', width='50', minwidth='50')
