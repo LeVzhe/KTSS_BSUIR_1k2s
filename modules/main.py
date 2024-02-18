@@ -26,22 +26,22 @@ def is_number(str):
         return False
 
 w_main = tk.Tk()
-t_main = ttk.Treeview(columns=constants.t_col, show='headings')
+t_main = ttk.Treeview(columns=constants.t_col, show='headings', height='25')
 main_menu = tk.Menu()
 file_menu= tk.Menu(tearoff=0)
 
 errmsg = tk.StringVar()
 
 def valid_int(newval):
-    return re.match("^\d{0,5}$", newval) is not None
+    return re.match(r'^\d{0,5}$', newval) is not None
 check_int = (w_main.register(valid_int), "%P")
 
 def valid_float(newval):
-    return re.match("^(?:\d{1,8}(?:\.\d{0,2})?|\d{1,10})$", newval) is not None
+    return re.match(r'^(?:\d{1,8}(?:\.\d{0,2})?|\d{1,10})$', newval) is not None
 check_float = (w_main.register(valid_float), "%P")
 
 def valid_tarif_name(newval):
-    return re.match("^[a-zA-Zа-яА-Я](?:[\d]|(?:[^a-zA-Zа-яА-Я]{0,2}[a-zA-Zа-яА-Я]?)){0,9}$", newval) is not None
+    return re.match(r'^[a-zA-Zа-яА-Я](?:[\d]|(?:[^a-zA-Zа-яА-Я]{0,2}[a-zA-Zа-яА-Я]?)){0,20}$', newval) is not None
 check_tarif_name = (w_main.register(valid_tarif_name), "%P")
 
 def download_data():
@@ -53,7 +53,7 @@ def download_data():
     if is_download:
         return
     
-    with open("./db/data.txt", "r") as db:
+    with open("./db/data.txt", "r", encoding='utf-8') as db:
         if db == '':
             is_edit = False
             is_download = True
@@ -411,7 +411,7 @@ def save_data():
                 data.append(values)
             return data
         saved_data = get_treeview_data(t_main)
-        with open("./db/data.txt", "w") as file:
+        with open("./db/data.txt", "w", encoding='utf-8') as file:
             for line in saved_data:
                 line_as_str = [str(item) for item in line] 
                 file.write(' '.join(line_as_str) + '\n')
@@ -493,7 +493,7 @@ def sort(col, reverse, name):
     t_main.heading(col, command=lambda: sort(col, not reverse, name))
 
 #MAIN WINDOW AREA
-w_main.geometry('1330x400+100+150')
+w_main.geometry('1330x700+150+50')
 w_main.title('КТСС')
 w_main.resizable(False, False)
 icon = tk.PhotoImage(file='./img/icon.png')
