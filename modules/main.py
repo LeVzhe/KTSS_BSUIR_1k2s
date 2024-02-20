@@ -506,7 +506,7 @@ w_main.option_add("*tearOff", False)
 l_title = tk.Label(w_main, text='Калькулятор Тарифов Сотовой Связи', 
                    font=('Arial', 16, 'bold'), 
                    height='3', fg='green', bg='lightgrey')
-l_title.grid(columnspan='2', row=0)
+l_title.grid(columnspan='2', row=0, column='1')
 
 #MAIN MENU AREA
 main_menu.add_cascade(label="Инструменты", menu=file_menu)
@@ -563,6 +563,9 @@ t_main.bind('<Motion>', prevent_resize)
 
 #SEARCH AREA
 def search():
+    if not is_view:
+        mb.showerror('Ошибка', 'Загрузите данные')
+        return
     query = entry.get().lower()
     found_items = []
     for item in t_main.get_children():
@@ -571,28 +574,32 @@ def search():
             if query in str(value).lower():
                 found_items.append(values)
                 break
+    reset_button.config(state=tk.NORMAL)
 
-    # Очистка таблицы
     t_main.delete(*t_main.get_children())
 
-    # Вставка найденных элементов обратно в таблицу
     for item in found_items:
         t_main.insert("", "end", values=item)
 
 def reset():
-    # Очистка таблицы
     t_main.delete(*t_main.get_children())
-
-    # Вставка исходных элементов обратно в таблицу
+    reset_button.config(state=tk.DISABLED)
     for item in test_mass:
         t_main.insert("", "end", values=item)
-entry = tk.Entry(w_main)
 
-search_button = tk.Button(w_main, text="Поиск", command=search)
-reset_button = tk.Button(w_main, text="Сброс", command=reset)
 
-entry.grid(column='1', row='4')
-search_button.grid(column='2', row='4')
-reset_button.grid(column='3', row='4')
+entry = tk.Entry(w_main, width='13', font=('Arial', '22'))
+
+
+reset_button = tk.Button(w_main, text="Сброс", command=reset, height='2', width='11', state='disabled')
+search_button = tk.Button(w_main, text="Поиск", command=search, height='2', width='11')
+s_title = tk.Label(w_main, text='Введите данные для поиска', 
+                   font=('Arial', '12', 'bold'), fg='red', bg='lightgrey')
+
+s_title.grid(row='4', column='0', columnspan='2', sticky='enws', padx='150')
+entry.grid(column='1', columnspan='2', row='4', sticky='en', pady='5')
+search_button.grid(column='3', row='4', sticky='wn', pady='5', padx='10')
+reset_button.grid(column='3', row='4', sticky='wn', pady='5', padx='100')
+
 
 w_main.mainloop()
