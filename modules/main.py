@@ -550,15 +550,49 @@ t_main.column('price_mms', width='100', minwidth='50')
 t_main.column('free_mb', width='100', minwidth='50')
 t_main.column('price_mb', width='100', minwidth='50')
 
-t_main.grid(column='1', row='1', rowspan='3', sticky='esn', padx='4')
+t_main.grid(column='1', row='1', rowspan='3', columnspan='6', sticky='esn', padx='4')
 
 scrollbar = ttk.Scrollbar(orient='vertical', command=t_main.yview)
 t_main.configure(yscroll=scrollbar.set)
-scrollbar.grid(row='1', column='6', sticky="nsw",rowspan='3')
+scrollbar.grid(row='1', column='7', sticky="nsw",rowspan='3')
 def prevent_resize(event):
     if t_main.identify_region(event.x, event.y) == "separator":
         return "break"
 t_main.bind('<Button-1>', prevent_resize)
 t_main.bind('<Motion>', prevent_resize)
+
+#SEARCH AREA
+def search():
+    query = entry.get().lower()
+    found_items = []
+    for item in t_main.get_children():
+        values = t_main.item(item, 'values')
+        for value in values:
+            if query in str(value).lower():
+                found_items.append(values)
+                break
+
+    # Очистка таблицы
+    t_main.delete(*t_main.get_children())
+
+    # Вставка найденных элементов обратно в таблицу
+    for item in found_items:
+        t_main.insert("", "end", values=item)
+
+def reset():
+    # Очистка таблицы
+    t_main.delete(*t_main.get_children())
+
+    # Вставка исходных элементов обратно в таблицу
+    for item in test_mass:
+        t_main.insert("", "end", values=item)
+entry = tk.Entry(w_main)
+
+search_button = tk.Button(w_main, text="Поиск", command=search)
+reset_button = tk.Button(w_main, text="Сброс", command=reset)
+
+entry.grid(column='1', row='4')
+search_button.grid(column='2', row='4')
+reset_button.grid(column='3', row='4')
 
 w_main.mainloop()
