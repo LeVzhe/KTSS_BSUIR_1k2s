@@ -36,6 +36,12 @@ def valid_int(newval):
     return re.match(r'^\d{0,5}$', newval) is not None
 check_int = (w_main.register(valid_int), "%P")
 
+def on_quit():
+    result = mb.askquestion("Выход", "Хотите сохранить данные перед выходом?")
+    if result == 'yes':
+        save_data()
+    w_main.destroy()
+
 def valid_float(newval):
     return re.match(r'^(?:\d{1,8}(?:\.\d{0,2})?|\d{1,10})$', newval) is not None
 check_float = (w_main.register(valid_float), "%P")
@@ -395,6 +401,10 @@ def save_data():
     global is_saved
     global is_download
     global is_edit
+    if flag:
+        mb.showerror('Ошибка', '''Нельзя сохраняться в режиме поиска.
+            Нажмите кнопку "СБРОС"''')
+        return
     if not is_view:
         mb.showerror('Ошибка', 'Выведите данные')
         return
@@ -517,7 +527,7 @@ file_menu.add_command(label='Редактировать тариф', command=ope
 file_menu.add_command(label='Сохранить список тарифов', command=save_data)
 file_menu.add_command(label='Удалить тариф', command=delete_line)
 file_menu.add_separator()
-file_menu.add_command(label="Выйти", command=quit)
+file_menu.add_command(label="Выйти", command=on_quit)
 
 w_main.config(menu=main_menu)
 
@@ -563,6 +573,8 @@ t_main.bind('<Motion>', prevent_resize)
 
 #SEARCH AREA
 def search():
+    global flag
+    flag = True
     if not is_view:
         mb.showerror('Ошибка', 'Загрузите данные')
         return
@@ -582,11 +594,12 @@ def search():
         t_main.insert("", "end", values=item)
 
 def reset():
+    global flag
+    flag = False
     t_main.delete(*t_main.get_children())
     reset_button.config(state=tk.DISABLED)
     for item in test_mass:
         t_main.insert("", "end", values=item)
-
 
 entry = tk.Entry(w_main, width='13', font=('Arial', '22'))
 
@@ -601,5 +614,7 @@ entry.grid(column='1', columnspan='2', row='4', sticky='en', pady='5')
 search_button.grid(column='3', row='4', sticky='wn', pady='5', padx='10')
 reset_button.grid(column='3', row='4', sticky='wn', pady='5', padx='100')
 
+#SAVE CHECK AREA
+w_main.protocol("WM_DELETE_WINDOW", on_quit)  # Связываем функцию on_quit с событием закрытия окна
 
 w_main.mainloop()
