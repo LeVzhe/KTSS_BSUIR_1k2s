@@ -1,6 +1,6 @@
 import tkinter as tk
 import tkinter.ttk as ttk
-import b_click, constants
+import constants
 from tkinter import messagebox as mb
 import re
 
