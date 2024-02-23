@@ -375,7 +375,7 @@ def add_data():
 
     is_download = True
 
-def save_data(path='First'):
+def save_data(path):
     global is_view
     global is_saved
     global is_download
