@@ -498,14 +498,16 @@ def download_data(path):
         global is_edit
         global test_mass
         with open(f'./db/data{path}.txt', "r", encoding='utf-8') as db:
-            if db == '':
-                is_edit = False
-                is_download = True
-                is_view = False
-                is_saved = True
-                return
             mass = []
             lines = db.readlines()
+            if not lines:
+                print('ZEROOOO')
+                reset_button.config(state='disabled')
+                search_button.config(state='disabled')
+            else:
+                reset_button.config(state='normal')
+                search_button.config(state='normal')
+                
             for line in lines:
                 el = line.strip().split()
                 el = [e for e in el]
@@ -638,7 +640,7 @@ entry = tk.Entry(w_main, width='13', font=('Arial', '22'))
 
 
 reset_button = tk.Button(w_main, text="Сброс", command=reset, height='2', width='11', state='disabled')
-search_button = tk.Button(w_main, text="Поиск", command=search, height='2', width='11')
+search_button = tk.Button(w_main, text="Поиск", command=search, height='2', width='11', state='disabled')
 s_title = tk.Label(w_main, text='Введите данные для поиска', 
                    font=('Arial', '12', 'bold'), fg='red', bg='lightgrey')
 
