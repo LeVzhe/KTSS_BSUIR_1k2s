@@ -507,7 +507,7 @@ def download_data(path):
             else:
                 reset_button.config(state='normal')
                 search_button.config(state='normal')
-                
+
             for line in lines:
                 el = line.strip().split()
                 el = [e for e in el]
@@ -524,12 +524,16 @@ def display_table():
         item = table.item(table.focus())
         w_main.actual_db = item['values'][0]
         complex_update(w_main.actual_db)
+        table_window.destroy()
         
     directory = './db/'
     file_info = count_files(directory)
 
     table_window = tk.Toplevel(w_main)
+    table_window.resizable(False, False)
     table = ttk.Treeview(table_window, columns=("Name", "Line Count"), show='headings')
+    table.bind('<Button-1>', prevent_resize)
+    table.bind('<Motion>', prevent_resize)
     table.heading("#1", text="Имя телефонной сети")
     table.heading("#2", text="Количество тарифов")
 
