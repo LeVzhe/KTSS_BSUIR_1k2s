@@ -525,17 +525,33 @@ def display_table():
         w_main.actual_db = item['values'][0]
         complex_update(w_main.actual_db)
         table_window.destroy()
-        
+
+    def on_treeview_scroll(event):
+        table.yview_scroll(int(-1*(event.delta/120)), "units")
+
     directory = './db/'
     file_info = count_files(directory)
 
     table_window = tk.Toplevel(w_main)
     table_window.resizable(False, False)
+
     table = ttk.Treeview(table_window, columns=("Name", "Line Count"), show='headings')
-    table.bind('<Button-1>', prevent_resize)
-    table.bind('<Motion>', prevent_resize)
+    table.bind("<Double-1>", on_double_click)
+    table.bind("<MouseWheel>", on_treeview_scroll)
+
     table.heading("#1", text="Имя телефонной сети")
     table.heading("#2", text="Количество тарифов")
+
+    scrollbar1 = ttk.Scrollbar(table_window, orient='vertical', command=table.yview)
+    table.configure(yscrollcommand=scrollbar1.set)
+
+    for name, lines in file_info:
+        table.insert("", "end", values=(name, lines))
+
+    table.pack(side='left', fill='both', expand=True)
+    scrollbar1.pack(side='right', fill='y')
+
+    table_window.mainloop()
 
     for name, lines in file_info:
         table.insert("", "end", values=(name, lines))
