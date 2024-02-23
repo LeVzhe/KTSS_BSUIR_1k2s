@@ -67,6 +67,7 @@ def update_table():
     global is_view
     global is_saved
     global is_edit
+    is_download = True
     if is_download or is_edit:
         update_treeview(test_mass)
         is_download = True
@@ -372,7 +373,7 @@ def add_data():
     open_fill_window()
     is_saved = False
 
-    is_download = False
+    is_download = True
 
 def save_data(path='First'):
     global is_view
@@ -399,7 +400,7 @@ def save_data(path='First'):
                 data.append(values)
             return data
         saved_data = get_treeview_data(t_main)
-        with open(f"./db/data{path}.txt", "w", encoding='utf-8') as file:
+        with open(f"./db/data_{path}_.txt", "w", encoding='utf-8') as file:
             for line in saved_data:
                 line_as_str = [str(item) for item in line] 
                 file.write(' '.join(line_as_str) + '\n')
