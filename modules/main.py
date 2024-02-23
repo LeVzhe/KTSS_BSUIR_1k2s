@@ -28,6 +28,7 @@ def is_number(str):
         return False
 
 w_main = tk.Tk()
+w_main.actual_db = ''
 t_main = ttk.Treeview(columns=constants.t_col, show='headings', height='25')
 main_menu = tk.Menu()
 file_menu= tk.Menu(tearoff=0)
@@ -372,7 +373,7 @@ def add_data():
 
     is_download = False
 
-def save_data(path):
+def save_data(path='First'):
     global is_view
     global is_saved
     global is_download
@@ -381,8 +382,8 @@ def save_data(path):
         mb.showerror('Ошибка', '''Нельзя сохраняться в режиме поиска.
             Нажмите кнопку "СБРОС"''')
         return
-    if not is_view:
-        mb.showerror('Ошибка', 'Выведите данные')
+    if not is_download:
+        mb.showerror('Ошибка', 'Нечего сохранять')
         return
     else:
         is_download = False
