@@ -3,6 +3,7 @@ import tkinter.ttk as ttk
 import constants
 from tkinter import messagebox as mb
 import re
+import os
 
 flag = False
 is_download = False
@@ -10,6 +11,7 @@ is_view = False
 is_saved = True
 is_edit = False
 test_mass = []
+actual_db = ''
 
 def is_int(str):
     try:
@@ -37,6 +39,8 @@ def valid_int(newval):
 check_int = (w_main.register(valid_int), "%P")
 
 def on_quit():
+    if not is_download:
+        quit()
     result = mb.askquestion("Выход", "Хотите сохранить данные перед выходом?")
     if result == 'yes':
         save_data()
@@ -50,34 +54,6 @@ def valid_tarif_name(newval):
     return re.match(r'^[a-zA-Zа-яА-Я](?:[\d]|(?:[^a-zA-Zа-яА-Я]{0,2}[a-zA-Zа-яА-Я]?)){0,20}$', newval) is not None
 check_tarif_name = (w_main.register(valid_tarif_name), "%P")
 
-def download_data():
-    global is_download
-    global is_view
-    global is_saved
-    global is_edit
-    global test_mass
-    if is_download:
-        return
-    
-    with open("./db/data.txt", "r", encoding='utf-8') as db:
-        if db == '':
-            is_edit = False
-            is_download = True
-            is_view = False
-            is_saved = True
-            return
-        mass = []
-        lines = db.readlines()
-        for line in lines:
-            el = line.strip().split()
-            el = [e for e in el]
-            mass.append(el)
-        test_mass = mass
-
-    is_edit = False
-    is_download = True
-    is_view = False
-    is_saved = True
 
 def update_treeview(new_data):
     t_main.delete(*t_main.get_children())
@@ -396,7 +372,7 @@ def add_data():
 
     is_download = False
 
-def save_data():
+def save_data(path):
     global is_view
     global is_saved
     global is_download
@@ -421,7 +397,7 @@ def save_data():
                 data.append(values)
             return data
         saved_data = get_treeview_data(t_main)
-        with open("./db/data.txt", "w", encoding='utf-8') as file:
+        with open(f"./db/data{path}.txt", "w", encoding='utf-8') as file:
             for line in saved_data:
                 line_as_str = [str(item) for item in line] 
                 file.write(' '.join(line_as_str) + '\n')
@@ -502,6 +478,64 @@ def sort(col, reverse, name):
 
     t_main.heading(col, command=lambda: sort(col, not reverse, name))
 
+def count_files(directory):
+    txt_files = [f for f in os.listdir(directory) if f.endswith('.txt') and f.startswith('data')]
+    file_info = []
+    for txt_file in txt_files:
+        with open(os.path.join(directory, txt_file), encoding='utf-8') as file:
+            lines = sum(1 for line in file)
+            filename = txt_file.replace('data', '').replace('.txt', '')
+            file_info.append((filename, lines))
+    return file_info
+def complex_update(path):
+    download_data(path)
+    update_table()
+
+def download_data(path):
+        global is_download
+        global is_view
+        global is_saved
+        global is_edit
+        global test_mass
+        with open(f'./db/data{path}.txt', "r", encoding='utf-8') as db:
+            if db == '':
+                is_edit = False
+                is_download = True
+                is_view = False
+                is_saved = True
+                return
+            mass = []
+            lines = db.readlines()
+            for line in lines:
+                el = line.strip().split()
+                el = [e for e in el]
+                mass.append(el)
+            test_mass = mass
+
+        is_edit = False
+        is_download = True
+        is_view = False
+        is_saved = True
+
+def display_table():
+    def on_double_click(event):
+        item = table.item(table.focus())
+        w_main.actual_db = item['values'][0]
+        complex_update(w_main.actual_db)
+        
+    directory = './db/'
+    file_info = count_files(directory)
+
+    table_window = tk.Toplevel(w_main)
+    table = ttk.Treeview(table_window, columns=("Name", "Line Count"), show='headings')
+    table.heading("#1", text="Имя телефонной сети")
+    table.heading("#2", text="Количество тарифов")
+
+    for name, lines in file_info:
+        table.insert("", "end", values=(name, lines))
+    table.bind("<Double-1>", on_double_click)
+    table.pack()
+
 #MAIN WINDOW AREA
 w_main.geometry('1330x700+150+50')
 w_main.title('КТСС')
@@ -520,11 +554,10 @@ l_title.grid(columnspan='2', row=0, column='1')
 
 #MAIN MENU AREA
 main_menu.add_cascade(label="Инструменты", menu=file_menu)
-file_menu.add_command(label='Загрузить список тарифов', command=download_data)
-file_menu.add_command(label='Вывести список тарифов', command=update_table)
+file_menu.add_command(label='Загрузить список тарифов', command=display_table)
 file_menu.add_command(label='Добавить тариф в список', command=add_data)
 file_menu.add_command(label='Редактировать тариф', command=open_edit_window)
-file_menu.add_command(label='Сохранить список тарифов', command=save_data)
+file_menu.add_command(label='Сохранить список тарифов', command=lambda: save_data(w_main.actual_db))
 file_menu.add_command(label='Удалить тариф', command=delete_line)
 file_menu.add_separator()
 file_menu.add_command(label="Выйти", command=on_quit)
@@ -615,6 +648,6 @@ search_button.grid(column='3', row='4', sticky='wn', pady='5', padx='10')
 reset_button.grid(column='3', row='4', sticky='wn', pady='5', padx='100')
 
 #SAVE CHECK AREA
-w_main.protocol("WM_DELETE_WINDOW", on_quit)  # Связываем функцию on_quit с событием закрытия окна
+w_main.protocol("WM_DELETE_WINDOW", on_quit)
 
 w_main.mainloop()
