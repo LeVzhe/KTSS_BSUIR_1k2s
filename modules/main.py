@@ -41,7 +41,8 @@ check_int = (w_main.register(valid_int), "%P")
 
 def on_quit():
     if not is_download:
-        quit()
+        w_main.destroy()
+        return
     result = mb.askquestion("Выход", "Хотите сохранить данные перед выходом?")
     if result == 'yes':
         save_data()
@@ -480,14 +481,16 @@ def sort(col, reverse, name):
     t_main.heading(col, command=lambda: sort(col, not reverse, name))
 
 def count_files(directory):
-    txt_files = [f for f in os.listdir(directory) if f.endswith('.txt') and f.startswith('data')]
+    txt_files = [f for f in os.listdir(directory) if f.endswith('_.txt') and f.startswith('data_')]
     file_info = []
     for txt_file in txt_files:
         with open(os.path.join(directory, txt_file), encoding='utf-8') as file:
             lines = sum(1 for line in file)
-            filename = txt_file.replace('data', '').replace('.txt', '')
-            file_info.append((filename, lines))
+            filename = txt_file.replace('data_', '').replace('_.txt', '')
+            if filename != '':
+                file_info.append((filename, lines))      
     return file_info
+
 def complex_update(path):
     download_data(path)
     update_table()
@@ -498,11 +501,10 @@ def download_data(path):
         global is_saved
         global is_edit
         global test_mass
-        with open(f'./db/data{path}.txt', "r", encoding='utf-8') as db:
+        with open(f'./db/data_{path}_.txt', "r", encoding='utf-8') as db:
             mass = []
             lines = db.readlines()
             if not lines:
-                print('ZEROOOO')
                 reset_button.config(state='disabled')
                 search_button.config(state='disabled')
             else:
