@@ -45,7 +45,7 @@ def on_quit():
         return
     result = mb.askquestion("Выход", "Хотите сохранить данные перед выходом?")
     if result == 'yes':
-        save_data()
+        save_data(w_main.actual_db)
     w_main.destroy()
 
 def valid_float(newval):
