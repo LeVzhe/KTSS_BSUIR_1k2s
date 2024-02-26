@@ -1,9 +1,7 @@
 import tkinter as tk
 import tkinter.ttk as ttk
-import constants
 from tkinter import messagebox as mb
-import re
-import os
+import re, os, subprocess, constants
 
 flag = False
 is_download = False
@@ -31,7 +29,8 @@ w_main = tk.Tk()
 w_main.actual_db = ''
 t_main = ttk.Treeview(columns=constants.t_col, show='headings', height='25')
 main_menu = tk.Menu()
-file_menu= tk.Menu(tearoff=0)
+file1_menu = tk.Menu(tearoff=0)
+file_menu = tk.Menu(tearoff=0)
 
 errmsg = tk.StringVar()
 
@@ -562,6 +561,13 @@ def display_table():
     table.bind("<Double-1>", on_double_click)
     table.pack()
 
+def open_manual():
+    try:
+        subprocess.Popen(['start', '', './db/ktss_manual.pdf'], shell=True)
+        # print(f"Открыт файл: {'./db/ktss_manual.pdf'}")
+    except Exception as e:
+        print(f"Ошибка при открытии файла: {e}")
+
 #MAIN WINDOW AREA
 w_main.geometry('1330x700+150+50')
 w_main.title('КТСС')
@@ -580,6 +586,8 @@ l_title.grid(columnspan='2', row=0, column='1')
 
 #MAIN MENU AREA
 main_menu.add_cascade(label="Инструменты", menu=file_menu)
+main_menu.add_cascade(label="Помощь", menu=file1_menu)
+file1_menu.add_command(label='Справка', command=open_manual)
 file_menu.add_command(label='Загрузить список тарифов', command=display_table)
 file_menu.add_command(label='Добавить тариф в список', command=add_data)
 file_menu.add_command(label='Редактировать тариф', command=open_edit_window)
